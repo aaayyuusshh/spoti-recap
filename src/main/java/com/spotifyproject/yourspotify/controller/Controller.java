@@ -33,7 +33,8 @@ public class Controller {
 
     @PostMapping("/auth/token")
     public ResponseEntity<?> getAccessToken(@RequestBody Map<String, String> body) {
-
+        System.out.println("--------------------------------------");
+        System.out.println("in getAccessToken " + body.get("code"));
         String tokenEndpoint = "https://accounts.spotify.com/api/token";
         String code = body.get("code");
 
@@ -45,11 +46,12 @@ public class Controller {
         form.add("grant_type", "authorization_code");
         form.add("code", code);
         form.add("redirect_uri", redirectUri);
+        System.out.println("form: " + form);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(form, headers);
         ResponseEntity<Map> response = restTemplate.postForEntity(tokenEndpoint, request, Map.class);
+        System.out.println("spotify token response: " + response.getBody());
 
         return ResponseEntity.ok(response.getBody());
     }
-
 }
