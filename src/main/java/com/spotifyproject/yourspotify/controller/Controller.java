@@ -7,7 +7,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -71,7 +72,30 @@ public class Controller {
                 Map.class
         );
 
-        System.out.println("top tracks: " + response.getBody());
-        return ResponseEntity.ok(response.getBody());
+        System.out.println("raw top tracks: " + response.getBody());
+
+        // simplifying the raw response bc it is BULKY
+        // @TODO extract this simplification process into a function
+        List<Map<String, String>> simplifiedResponse = new ArrayList<>();
+        List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
+
+        for(Map<String, Object> item : items) {
+            String trackName = (String) item.get("name");
+
+            List<Map<String, Object>> artists = (List<Map<String, Object>>) item.get("artists");
+            String artistNames = artists.stream()
+                    .map(a -> (String) a.get("name"))
+                    .collect(Collectors.joining(", "));
+
+            System.out.println("🎵 " + trackName + " by " + artistNames);
+
+            Map<String, String> track = new HashMap<>();
+            track.put("name", trackName);
+            track.put("artists", artistNames);
+            simplifiedResponse.add(track);
+        }
+
+        // simplified version:  [{name: "Drake", song: "Redemption"}, {name: "Jamesy", song: "Wagwan Remix"}]
+        return ResponseEntity.ok(simplifiedResponse);
     }
 }
