@@ -8,6 +8,7 @@ const SCOPE = "user-top-read";
 
 function App() {
   const [token, setToken] = useState<string | null>(null);
+  const [tracks, setTracks] = useState<any[]>([]);
 
   const fetchedRef = useRef(false);
 
@@ -27,6 +28,18 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    if (token) {
+        console.log("lol got token");
+      fetch("http://localhost:8080/api/top-tracks", {
+
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then(res => res.json())
+        .then(data => setTracks(data));
+    }
+  }, [token]);
+
   const loginUrl = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`;
 
   return (
@@ -43,6 +56,13 @@ function App() {
       ) : (
         <div>
           <h1 className="text-2xl text-green-600 font-semibold">Successfully authenticated ✅</h1>
+          {
+            tracks.map(track => (
+                <li style={{ listStyleType: "none" }} key={track.name}>
+                    🎵 {track.name} by {track.artists}
+                </li>
+            ))
+          }
         </div>
       )}
     </div>
