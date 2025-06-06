@@ -98,4 +98,23 @@ public class Controller {
         // simplified version:  [{name: "Drake", song: "Redemption"}, {name: "Jamesy", song: "Wagwan Remix"}]
         return ResponseEntity.ok(simplifiedResponse);
     }
+
+    @GetMapping("/top-artists")
+    public ResponseEntity<?> getTopArtists(@RequestHeader("Authorization") String accessToken) {
+        String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=10&time_range=long_term";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", accessToken);
+
+        HttpEntity<String> request = new HttpEntity<>(headers);
+
+        ResponseEntity<Map> response = restTemplate.exchange(
+                topArtistsEndpoint,
+                HttpMethod.GET,
+                request,
+                Map.class
+        );
+
+        return ResponseEntity.ok(response.getBody());
+    }
 }
