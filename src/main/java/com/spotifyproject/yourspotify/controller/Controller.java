@@ -72,8 +72,6 @@ public class Controller {
                 Map.class
         );
 
-        System.out.println("raw top tracks: " + response.getBody());
-
         // simplifying the raw response bc it is BULKY
         // @TODO extract this simplification process into a function
         List<Map<String, String>> simplifiedResponse = new ArrayList<>();
@@ -128,5 +126,49 @@ public class Controller {
 
         // simplified version: ["Drake", "Young Thug]
         return ResponseEntity.ok(simplifiedResponse);
+    }
+
+    @GetMapping("/top-genres")
+    // @TODO double work of calling /top/artists endpoint, refactor
+    public ResponseEntity<?> getTopGenres(@RequestHeader("Authorization") String accessToken) {
+
+        String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=50&time_range=long_term";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", accessToken);
+
+        HttpEntity<String> request = new HttpEntity<>(headers);
+
+        ResponseEntity<Map> response = restTemplate.exchange(
+                topArtistsEndpoint,
+                HttpMethod.GET,
+                request,
+                Map.class
+        );
+
+
+        List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
+        Map<String, Integer> genreFrequency = new HashMap<>();
+
+        for(Map<String, Object> item: items) {
+            ArrayList<String> genres = (ArrayList<String>) item.get("genres");
+
+            for(String genre: genres) {
+                genreFrequency.put(genre, genreFrequency.getOrDefault(genre, 0) + 1);
+            }
+        }
+
+        // sorting in descending order
+        List<Map<String, Object>> sortedGenres = genreFrequency.entrySet().stream()
+                .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+                .map(entry -> {
+                    Map<String, Object> genreData = new HashMap<>();
+                    genreData.put("genre", entry.getKey());
+                    genreData.put("count", entry.getValue());
+                    return genreData;
+                })
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(sortedGenres);
     }
 }
