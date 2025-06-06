@@ -115,6 +115,18 @@ public class Controller {
                 Map.class
         );
 
-        return ResponseEntity.ok(response.getBody());
+        // simplifying raw response
+        // @TODO extract this simplification process into a function
+        List<String> simplifiedResponse = new ArrayList<>();
+        List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
+
+        for(Map<String, Object> item: items) {
+            String artistName = (String) item.get("name");
+            simplifiedResponse.add(artistName);
+            System.out.println("🎤 " + artistName);
+        }
+
+        // simplified version: ["Drake", "Young Thug]
+        return ResponseEntity.ok(simplifiedResponse);
     }
 }
