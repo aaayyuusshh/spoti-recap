@@ -131,7 +131,6 @@ public class Controller {
     @GetMapping("/top-genres")
     // @TODO double work of calling /top/artists endpoint, refactor
     public ResponseEntity<?> getTopGenres(@RequestHeader("Authorization") String accessToken) {
-
         String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=50&time_range=long_term";
 
         HttpHeaders headers = new HttpHeaders();
@@ -145,7 +144,6 @@ public class Controller {
                 request,
                 Map.class
         );
-
 
         List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
         Map<String, Integer> genreFrequency = new HashMap<>();
@@ -161,6 +159,7 @@ public class Controller {
         // sorting in descending order
         List<Map<String, Object>> sortedGenres = genreFrequency.entrySet().stream()
                 .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+                .limit(10)
                 .map(entry -> {
                     Map<String, Object> genreData = new HashMap<>();
                     genreData.put("genre", entry.getKey());
