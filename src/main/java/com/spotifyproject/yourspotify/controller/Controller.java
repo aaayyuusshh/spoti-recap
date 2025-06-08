@@ -54,11 +54,15 @@ public class Controller {
     }
 
     @GetMapping("/top-tracks")
-    public ResponseEntity<?> getTopTracks(@RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<?> getTopTracks(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestParam(name = "timeRange", defaultValue = "long_term") String timeRange
+    ) {
+
         System.out.println("--------------------------------------");
         System.out.println("in get top tracks: " + accessToken);
 
-        String topTracksEndpoint = "https://api.spotify.com/v1/me/top/tracks?limit=10&time_range=long_term";
+        String topTracksEndpoint = "https://api.spotify.com/v1/me/top/tracks?limit=10&time_range=" + timeRange;
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", accessToken);
@@ -98,8 +102,11 @@ public class Controller {
     }
 
     @GetMapping("/top-artists")
-    public ResponseEntity<?> getTopArtists(@RequestHeader("Authorization") String accessToken) {
-        String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=10&time_range=long_term";
+    public ResponseEntity<?> getTopArtists(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestParam(name = "timeRange", defaultValue = "long_term") String timeRange
+    ) {
+        String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=10&time_range=" + timeRange;
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", accessToken);
@@ -130,8 +137,11 @@ public class Controller {
 
     @GetMapping("/top-genres")
     // @TODO double work of calling /top/artists endpoint, refactor
-    public ResponseEntity<?> getTopGenres(@RequestHeader("Authorization") String accessToken) {
-        String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=50&time_range=long_term";
+    public ResponseEntity<?> getTopGenres(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestParam(name = "timeRange", defaultValue = "long_term") String timeRange
+    ) {
+        String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=50&time_range=" + timeRange;
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", accessToken);
