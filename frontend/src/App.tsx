@@ -10,6 +10,7 @@ function App() {
   const [token, setToken] = useState<string | null>(null);
   const [data, setData] = useState<any[]>([]);
   const [selectedType, setSelectedType] = useState<"tracks" | "artists" | "genres">("tracks");
+  const [timeRange, setTimeRange] = useState<"short_term" | "medium_term" | "long_term">("long_term");
 
   const fetchedRef = useRef(false);
 
@@ -37,13 +38,13 @@ function App() {
         : selectedType == "artists" ?  "top-artists"
         : "top-genres";
 
-      fetch(`http://localhost:8080/api/${endpoint}`, {
+      fetch(`http://localhost:8080/api/${endpoint}?timeRange=${timeRange}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then(res => res.json())
         .then(data => setData(data));
     }
-  }, [token, selectedType]);
+  }, [token, selectedType, timeRange]);
 
   const loginUrl = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`;
 
@@ -75,7 +76,19 @@ function App() {
               <option value="tracks">Top Tracks</option>
               <option value="artists">Top Artists</option>
               <option value="genres">Top Genres</option>
+            </select>
 
+            <label className="mr-2 font-medium">Time Range:</label>
+            <select
+              value={timeRange}
+              onChange={(e) => {
+                setTimeRange(e.target.value as "short_term" | "medium_term" | "long_term");
+              }}
+              className="p-2 rounded border border-gray-300"
+            >
+              <option value="short_term">1 month</option>
+              <option value="medium_term">6 months</option>
+              <option value="long_term">All time</option>
             </select>
           </div>
 
