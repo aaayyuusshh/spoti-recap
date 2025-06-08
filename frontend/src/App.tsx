@@ -63,7 +63,10 @@ function App() {
             <label className="mr-2 font-medium">View:</label>
             <select
               value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value as "tracks" | "artists")}
+              onChange={(e) => {
+                  setData([]);
+                  setSelectedType(e.target.value as "tracks" | "artists")
+                }}
               className="p-2 rounded border border-gray-300"
             >
               <option value="tracks">Top Tracks</option>
