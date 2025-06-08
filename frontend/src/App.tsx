@@ -9,7 +9,7 @@ const SCOPE = "user-top-read";
 function App() {
   const [token, setToken] = useState<string | null>(null);
   const [data, setData] = useState<any[]>([]);
-  const [selectedType, setSelectedType] = useState<"tracks" | "artists">("tracks");
+  const [selectedType, setSelectedType] = useState<"tracks" | "artists" | "genres">("tracks");
 
   const fetchedRef = useRef(false);
 
@@ -32,7 +32,10 @@ function App() {
   useEffect(() => {
     if (token) {
       console.log("lol got token");
-      const endpoint = selectedType == "tracks" ? "top-tracks" : "top-artists";
+      const endpoint =
+        selectedType == "tracks" ? "top-tracks" 
+        : selectedType == "artists" ?  "top-artists"
+        : "top-genres";
 
       fetch(`http://localhost:8080/api/${endpoint}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -65,21 +68,27 @@ function App() {
               value={selectedType}
               onChange={(e) => {
                   setData([]);
-                  setSelectedType(e.target.value as "tracks" | "artists")
+                  setSelectedType(e.target.value as "tracks" | "artists" | "genres");
                 }}
               className="p-2 rounded border border-gray-300"
             >
               <option value="tracks">Top Tracks</option>
               <option value="artists">Top Artists</option>
+              <option value="genres">Top Genres</option>
+
             </select>
           </div>
 
           <ul>
             {data.map((item, index) => (
               <li key={index} className="py-1">
-                {selectedType === "tracks"
+                {
+                  selectedType === "tracks" 
                   ? `🎵 ${item.name} by ${item.artists}`
-                  : `🎤 ${item}`}
+                  : selectedType === "artists" 
+                  ? `🎤 ${item}`
+                  : `🎧 ${item.genre} (${item.count}/50 artists)`
+                }
               </li>
             ))}
           </ul>
