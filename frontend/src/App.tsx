@@ -59,50 +59,86 @@ function App() {
         >
           Login with Spotify
         </a>
-      ) : (
+      ) : 
+      (
         <div>
-          <h1 className="text-2xl text-green-600 font-semibold mb-4">Successfully authenticated ✅</h1>
-
-          <div className="mb-4">
-            <label className="mr-2 font-medium">View:</label>
-            <select
-              value={selectedType}
-              onChange={(e) => {
+          <div className="flex flex-wrap items-center gap-6 mb-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">View</label>
+              <select
+                value={selectedType}
+                onChange={(e) => {
                   setData([]);
                   setSelectedType(e.target.value as "tracks" | "artists" | "genres");
                 }}
-              className="p-2 rounded border border-gray-300"
-            >
-              <option value="tracks">Top Tracks</option>
-              <option value="artists">Top Artists</option>
-              <option value="genres">Top Genres</option>
-            </select>
+                className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+              >
+                <option value="tracks">Top Tracks</option>
+                <option value="artists">Top Artists</option>
+                <option value="genres">Top Genres</option>
+              </select>
+            </div>
 
-            <label className="mr-2 font-medium">Time Range:</label>
-            <select
-              value={timeRange}
-              onChange={(e) => {
-                setTimeRange(e.target.value as "short_term" | "medium_term" | "long_term");
-              }}
-              className="p-2 rounded border border-gray-300"
-            >
-              <option value="short_term">1 month</option>
-              <option value="medium_term">6 months</option>
-              <option value="long_term">All time</option>
-            </select>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Time Range</label>
+              <select
+                value={timeRange}
+                onChange={(e) => {
+                  setTimeRange(e.target.value as "short_term" | "medium_term" | "long_term");
+                }}
+                className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+              >
+                <option value="short_term">1 month</option>
+                <option value="medium_term">6 months</option>
+                <option value="long_term">All time</option>
+              </select>
+            </div>
           </div>
 
-          <ul>
+          <h2 className="text-2xl font-bold text-gray-700 mt-8">
+            {selectedType === "tracks"
+              ? "Your Top Tracks"
+              : selectedType === "artists"
+              ? "Your Top Artists"
+              : "Your Top Genres"}
+          </h2>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 font-fancy animate-fade-in">
             {data.map((item, index) => (
-              <li key={index} className="py-1">
-                {
-                  selectedType === "tracks" 
-                  ? `🎵 ${item.name} by ${item.artists}`
-                  : selectedType === "artists" 
-                  ? `🎤 ${item}`
-                  : `🎧 ${item.genre} (${item.count}/50 artists)`
-                }
-              </li>
+            <li
+              key={index}
+              className="bg-white border border-gray-200 rounded-2xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4"
+            >
+              {/* show album cover for tracks */}
+              {selectedType === "tracks" && item.albumCoverUrl && (
+                <img
+                  src={item.albumCoverUrl}
+                  alt={item.name}
+                  className="w-20 h-20 rounded-xl object-cover shadow-sm"
+                />
+              )}
+
+              {/* info text area for everything */}
+              <div className="flex flex-col justify-center">
+                <div className="text-lg font-semibold text-gray-800">
+                  {selectedType === "tracks"
+                    ? item.name
+                    : selectedType === "artists"
+                    ? item
+                    : item.genre}
+                </div>
+
+                {selectedType === "tracks" && (
+                  <div className="text-sm text-gray-500 mt-1">by {item.artists}</div>
+                )}
+
+                {selectedType === "genres" && (
+                  <div className="text-sm text-gray-500 mt-1">
+                    {item.count} of your top 50 artists
+                  </div>
+                )}
+              </div>
+            </li>
+
             ))}
           </ul>
         </div>
