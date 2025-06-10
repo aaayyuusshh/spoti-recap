@@ -91,9 +91,14 @@ public class Controller {
 
             System.out.println("🎵 " + trackName + " by " + artistNames);
 
+            Map<String, Object> album = (Map<String, Object>) item.get("album");
+            List<Map<String, Object>> images = (List<Map<String, Object>>) album.get("images");
+            String albumCoverUrl = (String) images.get(0).get("url");
+
             Map<String, String> track = new HashMap<>();
             track.put("name", trackName);
             track.put("artists", artistNames);
+            track.put("albumCoverUrl", albumCoverUrl);
             simplifiedResponse.add(track);
         }
 
