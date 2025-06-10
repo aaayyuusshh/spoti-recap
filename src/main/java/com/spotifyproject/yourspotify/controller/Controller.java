@@ -127,16 +127,24 @@ public class Controller {
 
         // simplifying raw response
         // @TODO extract this simplification process into a function
-        List<String> simplifiedResponse = new ArrayList<>();
+        List<Map<String, String>> simplifiedResponse = new ArrayList<>();
         List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
 
         for(Map<String, Object> item: items) {
+            Map<String, String> artistInfo = new HashMap<>();
+
             String artistName = (String) item.get("name");
-            simplifiedResponse.add(artistName);
+            artistInfo.put("name", artistName);
             System.out.println("🎤 " + artistName);
+
+            List<Map<String, Object>> images = (List<Map<String, Object>>) item.get("images");
+            String artistImageUrl = (String) images.get(0).get("url");
+            artistInfo.put("artistImageUrl", artistImageUrl);
+
+            simplifiedResponse.add(artistInfo);
         }
 
-        // simplified version: ["Drake", "Young Thug]
+        // [{"artistImageUrl": "https://inserturlhere.com", "name": "Drake"}]
         return ResponseEntity.ok(simplifiedResponse);
     }
 
