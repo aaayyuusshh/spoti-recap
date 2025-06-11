@@ -56,13 +56,14 @@ public class Controller {
     @GetMapping("/top-tracks")
     public ResponseEntity<?> getTopTracks(
             @RequestHeader("Authorization") String accessToken,
-            @RequestParam(name = "timeRange", defaultValue = "long_term") String timeRange
+            @RequestParam(name = "timeRange", defaultValue = "long_term") String timeRange,
+            @RequestParam(name = "amount", defaultValue = "10") String amount
     ) {
 
         System.out.println("--------------------------------------");
         System.out.println("in get top tracks: " + accessToken);
 
-        String topTracksEndpoint = "https://api.spotify.com/v1/me/top/tracks?limit=10&time_range=" + timeRange;
+        String topTracksEndpoint = "https://api.spotify.com/v1/me/top/tracks?limit=" + amount + "&time_range=" + timeRange;
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", accessToken);
@@ -109,9 +110,10 @@ public class Controller {
     @GetMapping("/top-artists")
     public ResponseEntity<?> getTopArtists(
             @RequestHeader("Authorization") String accessToken,
-            @RequestParam(name = "timeRange", defaultValue = "long_term") String timeRange
+            @RequestParam(name = "timeRange", defaultValue = "long_term") String timeRange,
+            @RequestParam(name = "amount", defaultValue = "10") String amount
     ) {
-        String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=10&time_range=" + timeRange;
+        String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=" + amount + "&time_range=" + timeRange;
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", accessToken);
@@ -152,7 +154,8 @@ public class Controller {
     // @TODO double work of calling /top/artists endpoint, refactor
     public ResponseEntity<?> getTopGenres(
             @RequestHeader("Authorization") String accessToken,
-            @RequestParam(name = "timeRange", defaultValue = "long_term") String timeRange
+            @RequestParam(name = "timeRange", defaultValue = "long_term") String timeRange,
+            @RequestParam(name = "amount", defaultValue = "10") String amount
     ) {
         String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=50&time_range=" + timeRange;
 
@@ -179,10 +182,11 @@ public class Controller {
             }
         }
 
+        int limitAmount = Integer.parseInt(amount);
         // sorting in descending order
         List<Map<String, Object>> sortedGenres = genreFrequency.entrySet().stream()
                 .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
-                .limit(10)
+                .limit(limitAmount)
                 .map(entry -> {
                     Map<String, Object> genreData = new HashMap<>();
                     genreData.put("genre", entry.getKey());
