@@ -11,9 +11,9 @@ function App() {
   const [data, setData] = useState<any[]>([]);
   const [selectedType, setSelectedType] = useState<"tracks" | "artists" | "genres">("tracks");
   const [timeRange, setTimeRange] = useState<"short_term" | "medium_term" | "long_term">("long_term");
+  const [userFirstName, setUserFirstName] = useState<string | null>(null);
 
   const fetchedRef = useRef(false);
-
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get('code');
 
@@ -29,6 +29,16 @@ function App() {
         .then(data => setToken(data.access_token));
     }
   }, []);
+
+  useEffect(() => {
+    if(token) {
+      fetch("http://localhost:8080/api/user", {
+        headers: { Authorization: `Bearer ${token}`} 
+      })
+        .then(res => res.json())
+        .then(data => setUserFirstName(data.userFirstName));
+    }
+  },[token]);
 
   useEffect(() => {
     if (token) {
@@ -100,10 +110,11 @@ function App() {
 
           <h2 className="text-2xl font-bold text-gray-700">
             {selectedType === "tracks"
-              ? "Your Top Tracks"
+              ? `${userFirstName}'s Top Tracks 💿`
               : selectedType === "artists"
-              ? "Your Top Artists"
-              : "Your Top Genres"}
+              ? `${userFirstName}'s Top Artists 🧑‍🎤 `
+              : `${userFirstName}'s Top Genres 🎼`
+            }
           </h2>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 font-fancy animate-fade-in">
             {data.map((item, index) => (
