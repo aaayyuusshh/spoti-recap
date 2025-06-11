@@ -12,6 +12,7 @@ function App() {
   const [selectedType, setSelectedType] = useState<"tracks" | "artists" | "genres">("tracks");
   const [timeRange, setTimeRange] = useState<"short_term" | "medium_term" | "long_term">("long_term");
   const [userFirstName, setUserFirstName] = useState<string | null>(null);
+  const [amount, setAmount] = useState<"10" | "1">("10");
 
   const fetchedRef = useRef(false);
   useEffect(() => {
@@ -104,6 +105,20 @@ function App() {
                 <option value="long_term">All time</option>
               </select>
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+              <select
+                value={amount}
+                onChange={(e) => {
+                  setAmount(e.target.value as "10" | "1");
+                }}
+                className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+              >
+                <option value="10">Top 10</option>
+                <option value="1">GOAT</option>
+              </select>
+            </div>
           </div>
 
           <div className="h-px bg-gray-300 my-6 w-[310px]" />
@@ -117,7 +132,9 @@ function App() {
             }
           </h2>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 font-fancy animate-fade-in">
-            {data.map((item, index) => (
+            {amount == "1" ? <h1>goat picked</h1>
+            : 
+            data.map((item, index) => (
               <li
                 key={index}
                 className="bg-white border border-gray-200 rounded-2xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4"
