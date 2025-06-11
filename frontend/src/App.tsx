@@ -62,7 +62,8 @@ function App() {
       ) : 
       (
         <div>
-          <div className="flex flex-wrap items-center gap-6 mb-6">
+          <h3 className="text-xl font-semibold text-gray-600">Customize Your View</h3>
+          <div className="flex flex-wrap items-center gap-6 mt-4 mb-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">View</label>
               <select
@@ -95,7 +96,9 @@ function App() {
             </div>
           </div>
 
-          <h2 className="text-2xl font-bold text-gray-700 mt-8">
+          <div className="h-px bg-gray-300 my-6 w-[310px]" />
+
+          <h2 className="text-2xl font-bold text-gray-700">
             {selectedType === "tracks"
               ? "Your Top Tracks"
               : selectedType === "artists"
