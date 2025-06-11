@@ -210,6 +210,9 @@ public class Controller {
                 Map.class
         );
 
-        return ResponseEntity.ok(response.getBody());
+        String userFullName = (String) response.getBody().get("display_name");
+        String userFirstName = userFullName.split(" ")[0];
+
+        return ResponseEntity.ok(Collections.singletonMap("userFirstName", userFirstName));
     }
 }
