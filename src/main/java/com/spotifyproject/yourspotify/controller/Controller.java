@@ -193,4 +193,23 @@ public class Controller {
 
         return ResponseEntity.ok(sortedGenres);
     }
+
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserName(@RequestHeader("Authorization") String accessToken) {
+        String userProfileEndpoint = "https://api.spotify.com/v1/me";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", accessToken);
+
+        HttpEntity<String> request = new HttpEntity<>(headers);
+
+        ResponseEntity<Map> response = restTemplate.exchange(
+                userProfileEndpoint,
+                HttpMethod.GET,
+                request,
+                Map.class
+        );
+
+        return ResponseEntity.ok(response.getBody());
+    }
 }
