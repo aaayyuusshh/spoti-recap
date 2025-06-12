@@ -121,7 +121,7 @@ function App() {
             </div>
           </div>
 
-          <div className="h-px bg-gray-300 my-6 w-[310px]" />
+          <div className="h-px bg-gray-300 my-6 w-[450px]" />
 
           <h2 className="text-2xl font-bold text-gray-700">
             {selectedType === "tracks"
