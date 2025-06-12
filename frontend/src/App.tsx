@@ -49,13 +49,13 @@ function App() {
         : selectedType == "artists" ?  "top-artists"
         : "top-genres";
 
-      fetch(`http://localhost:8080/api/${endpoint}?timeRange=${timeRange}`, {
+      fetch(`http://localhost:8080/api/${endpoint}?timeRange=${timeRange}&amount=${amount}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then(res => res.json())
         .then(data => setData(data));
     }
-  }, [token, selectedType, timeRange]);
+  }, [token, selectedType, timeRange, amount]);
 
   const loginUrl = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`;
 
@@ -132,7 +132,40 @@ function App() {
             }
           </h2>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 font-fancy animate-fade-in">
-            {amount == "1" ? <h1>goat picked</h1>
+            {amount == "1" ? (
+              <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4">
+
+                {selectedType === "tracks" && data[0]?.albumCoverUrl && (
+                  <img
+                    src={data[0].albumCoverUrl}
+                    alt={data[0].name}
+                    className="w-20 h-20 rounded-xl object-cover shadow-sm"
+                  />
+                )}
+            
+                {selectedType === "artists" && data[0]?.artistImageUrl && (
+                  <img
+                    src={data[0].artistImageUrl}
+                    alt={data[0].name}
+                    className="w-20 h-20 rounded-full object-cover shadow-sm"
+                  />
+                )}
+
+                <div>
+                  <div className="text-lg font-semibold text-gray-800">
+                    {selectedType === "genres" ? data[0]?.genre : data[0]?.name}
+                  </div>
+            
+                  {selectedType === "tracks" && (
+                    <div className="text-sm text-gray-500 mt-1">by {data[0]?.artists}</div>
+                  )}
+            
+                  {selectedType === "genres" && (
+                    <div className="text-sm text-gray-500 mt-1">{data[0]?.count} of your top 50 artists</div>
+                  )}
+                </div>
+              </div>
+            )
             : 
             data.map((item, index) => (
               <li
