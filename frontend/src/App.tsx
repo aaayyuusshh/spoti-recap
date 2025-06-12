@@ -73,98 +73,110 @@ function App() {
       ) : 
       (
         <div>
-          <h3 className="text-xl font-semibold text-gray-600">Customize Your View</h3>
-          <div className="flex flex-wrap items-center gap-6 mt-4 mb-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">View</label>
-              <select
-                value={selectedType}
-                onChange={(e) => {
-                  setData([]);
-                  setSelectedType(e.target.value as "tracks" | "artists" | "genres");
-                }}
-                className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-              >
-                <option value="tracks">Top Tracks</option>
-                <option value="artists">Top Artists</option>
-                <option value="genres">Top Genres</option>
-              </select>
+          <div className="flex flex-col items-center text-center">
+            <h3 className="text-xl font-semibold text-gray-600">Customize Your View</h3>
+            <div className="flex flex-wrap items-center gap-6 mt-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">View</label>
+                <select
+                  value={selectedType}
+                  onChange={(e) => {
+                    setData([]);
+                    setSelectedType(e.target.value as "tracks" | "artists" | "genres");
+                  }}
+                  className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                >
+                  <option value="tracks">Top Tracks</option>
+                  <option value="artists">Top Artists</option>
+                  <option value="genres">Top Genres</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Time Range</label>
+                <select
+                  value={timeRange}
+                  onChange={(e) => {
+                    setTimeRange(e.target.value as "short_term" | "medium_term" | "long_term");
+                  }}
+                  className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                >
+                  <option value="short_term">1 month</option>
+                  <option value="medium_term">6 months</option>
+                  <option value="long_term">All time</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                <select
+                  value={amount}
+                  onChange={(e) => {
+                    setAmount(e.target.value as "10" | "1");
+                  }}
+                  className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                >
+                  <option value="10">Top 10</option>
+                  <option value="1">GOAT</option>
+                </select>
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Time Range</label>
-              <select
-                value={timeRange}
-                onChange={(e) => {
-                  setTimeRange(e.target.value as "short_term" | "medium_term" | "long_term");
-                }}
-                className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-              >
-                <option value="short_term">1 month</option>
-                <option value="medium_term">6 months</option>
-                <option value="long_term">All time</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
-              <select
-                value={amount}
-                onChange={(e) => {
-                  setAmount(e.target.value as "10" | "1");
-                }}
-                className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-              >
-                <option value="10">Top 10</option>
-                <option value="1">GOAT</option>
-              </select>
-            </div>
+             <div className="h-px bg-gray-300 my-6 w-[450px]" />
           </div>
 
-          <div className="h-px bg-gray-300 my-6 w-[450px]" />
+          {amount === "10" && (
+            <h2 className="text-2xl font-bold text-gray-700">
+                { selectedType === "tracks"
+                  ? `${userFirstName}'s Top Tracks 💿`
+                  : selectedType === "artists"
+                  ? `${userFirstName}'s Top Artists 🧑‍🎤 `
+                  : `${userFirstName}'s Top Genres 🎼`
+                }
+            </h2>
+          )}
 
-          <h2 className="text-2xl font-bold text-gray-700">
-            {selectedType === "tracks"
-              ? `${userFirstName}'s Top Tracks 💿`
-              : selectedType === "artists"
-              ? `${userFirstName}'s Top Artists 🧑‍🎤 `
-              : `${userFirstName}'s Top Genres 🎼`
-            }
-          </h2>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 font-fancy animate-fade-in">
             {amount == "1" ? (
-              <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4">
+                <div className="bg-gradient-to-br from-yellow-200 via-yellow-50 to-white border-4 border-yellow-400 rounded-3xl shadow-2xl px-8 py-12 flex flex-col items-center text-center gap-8 max-w-2xl  animate-fade-in">
+                    <div className="text-6xl sm:text-7xl">👑</div>
 
-                {selectedType === "tracks" && data[0]?.albumCoverUrl && (
-                  <img
-                    src={data[0].albumCoverUrl}
-                    alt={data[0].name}
-                    className="w-20 h-20 rounded-xl object-cover shadow-sm"
-                  />
-                )}
-            
-                {selectedType === "artists" && data[0]?.artistImageUrl && (
-                  <img
-                    src={data[0].artistImageUrl}
-                    alt={data[0].name}
-                    className="w-20 h-20 rounded-full object-cover shadow-sm"
-                  />
-                )}
+                    {selectedType === "tracks" && data[0]?.albumCoverUrl && (
+                      <img
+                        src={data[0].albumCoverUrl}
+                        alt={data[0].name}
+                        className="w-40 h-40 sm:w-52 sm:h-52 rounded-2xl object-cover shadow-xl border-4 border-white"
+                      />
+                    )}
 
-                <div>
-                  <div className="text-lg font-semibold text-gray-800">
-                    {selectedType === "genres" ? data[0]?.genre : data[0]?.name}
-                  </div>
-            
-                  {selectedType === "tracks" && (
-                    <div className="text-sm text-gray-500 mt-1">by {data[0]?.artists}</div>
-                  )}
-            
-                  {selectedType === "genres" && (
-                    <div className="text-sm text-gray-500 mt-1">{data[0]?.count} of your top 50 artists</div>
-                  )}
+                    {selectedType === "artists" && data[0]?.artistImageUrl && (
+                      <img
+                        src={data[0].artistImageUrl}
+                        alt={data[0].name}
+                        className="w-40 h-40 sm:w-52 sm:h-52 rounded-full object-cover shadow-xl border-4 border-white"
+                      />
+                    )}
+
+                    <div className="space-y-2">
+                      <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+                        {selectedType === "genres" ? data[0]?.genre : data[0]?.name}
+                      </h2>
+
+                      {selectedType === "tracks" && (
+                        <p className="text-lg text-gray-600">by {data[0]?.artists}</p>
+                      )}
+
+                      {selectedType === "genres" && (
+                        <p className="text-md text-gray-600">{data[0]?.count} of your top 50 artists</p>
+                      )}
+
+                      <p className="mt-4 text-sm text-gray-500 italic">
+                        {selectedType === "tracks" && `${userFirstName}'s most listened to track`}
+                        {selectedType === "artists" && `${userFirstName}'s GOAT artist`}
+                        {selectedType === "genres" && `${userFirstName}'s most loved genre`}
+                      </p>
+                    </div>
                 </div>
-              </div>
             )
             : 
             data.map((item, index) => (
