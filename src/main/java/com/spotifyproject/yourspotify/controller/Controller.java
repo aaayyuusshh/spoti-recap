@@ -50,7 +50,11 @@ public class Controller {
         ResponseEntity<Map> response = restTemplate.postForEntity(tokenEndpoint, request, Map.class);
         System.out.println("spotify token response: " + response.getBody());
 
-        return ResponseEntity.ok(response.getBody());
+        Map<String, String> tokenResults = new HashMap<>();
+        tokenResults.put("access_token", (String)response.getBody().get("access_token"));
+        tokenResults.put("refresh_token", (String)response.getBody().get("refresh_token"));
+
+        return ResponseEntity.ok(tokenResults);
     }
 
     @GetMapping("/top-tracks")
