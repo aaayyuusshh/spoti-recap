@@ -59,6 +59,17 @@ function App() {
 
   const loginUrl = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`;
 
+  function getTimeRangeLabel(timeRange: "short_term" | "medium_term" | "long_term"): string {
+    switch(timeRange) {
+      case("short_term"):
+        return "in the past month";
+      case "medium_term":
+        return "in the past 6 months";
+      default:
+        return "of all time"
+    }
+  }
+
   return (
     <div className="p-8">
       {!token ? (
@@ -139,8 +150,10 @@ function App() {
           {
             amount == "1" ? (
               <div className="flex justify-center w-full">
-                <div className="bg-gradient-to-br from-yellow-200 via-yellow-50 to-white border-4 border-yellow-400 rounded-3xl shadow-2xl px-8 py-12 flex flex-col items-center text-center gap-8 max-w-2xl  animate-fade-in">
-                  <div className="text-6xl sm:text-7xl">👑</div>
+                <div className="w-[320px] sm:w-[360px] md:w-[420px] h-[480px] sm:h-[520px] md:h-[580px] bg-gradient-to-br
+                 from-yellow-200 via-yellow-50 to-white border-4 border-yellow-400 rounded-3xl shadow-2xl px-6 py-8 flex
+                 flex-col items-center text-center gap-5 animate-fade-in">
+                  <div className="text-2xl sm:text-6xl opacity-80">👑</div>
 
                   {selectedType === "tracks" && data[0]?.albumCoverUrl && (
                     <img
@@ -171,10 +184,10 @@ function App() {
                       <p className="text-md text-gray-600">{data[0]?.count} of your top 50 artists</p>
                     )}
 
-                    <p className="mt-4 text-sm text-gray-500 italic">
-                      {selectedType === "tracks" && `${userFirstName}'s most listened to track`}
-                      {selectedType === "artists" && `${userFirstName}'s GOAT artist`}
-                      {selectedType === "genres" && `${userFirstName}'s most loved genre`}
+                    <p className="mt-14 text-xs text-gray-500 italic">
+                      {selectedType === "tracks" && `${userFirstName}'s most listened to track ${getTimeRangeLabel(timeRange)}`}
+                      {selectedType === "artists" && `${userFirstName}'s GOAT artist ${getTimeRangeLabel(timeRange)}`}
+                      {selectedType === "genres" && `${userFirstName}'s most loved genre ${getTimeRangeLabel(timeRange)}`}
                     </p>
                   </div>
                 </div>
