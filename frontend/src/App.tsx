@@ -34,7 +34,7 @@ function App() {
   useEffect(() => {
     if(token) {
       fetch("http://localhost:8080/api/user", {
-        headers: { Authorization: `Bearer ${token}`} 
+        headers: { Authorization: `Bearer ${token}`}
       })
         .then(res => res.json())
         .then(data => setUserFirstName(data.userFirstName));
@@ -45,7 +45,7 @@ function App() {
     if (token) {
       console.log("lol got token");
       const endpoint =
-        selectedType == "tracks" ? "top-tracks" 
+        selectedType == "tracks" ? "top-tracks"
         : selectedType == "artists" ?  "top-artists"
         : "top-genres";
 
@@ -70,7 +70,7 @@ function App() {
         >
           Login with Spotify
         </a>
-      ) : 
+      ) :
       (
         <div>
           <div className="flex flex-col items-center text-center">
@@ -136,93 +136,99 @@ function App() {
             </h2>
           )}
 
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 font-fancy animate-fade-in">
-            {amount == "1" ? (
+          {
+            amount == "1" ? (
+              <div className="flex justify-center w-full">
                 <div className="bg-gradient-to-br from-yellow-200 via-yellow-50 to-white border-4 border-yellow-400 rounded-3xl shadow-2xl px-8 py-12 flex flex-col items-center text-center gap-8 max-w-2xl  animate-fade-in">
-                    <div className="text-6xl sm:text-7xl">👑</div>
+                  <div className="text-6xl sm:text-7xl">👑</div>
 
-                    {selectedType === "tracks" && data[0]?.albumCoverUrl && (
+                  {selectedType === "tracks" && data[0]?.albumCoverUrl && (
+                    <img
+                      src={data[0].albumCoverUrl}
+                      alt={data[0].name}
+                      className="w-40 h-40 sm:w-52 sm:h-52 rounded-2xl object-cover shadow-xl border-4 border-white"
+                    />
+                  )}
+
+                  {selectedType === "artists" && data[0]?.artistImageUrl && (
+                    <img
+                      src={data[0].artistImageUrl}
+                      alt={data[0].name}
+                      className="w-40 h-40 sm:w-52 sm:h-52 rounded-full object-cover shadow-xl border-4 border-white"
+                    />
+                  )}
+
+                  <div className="space-y-2">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+                      {selectedType === "genres" ? data[0]?.genre : data[0]?.name}
+                    </h2>
+
+                    {selectedType === "tracks" && (
+                      <p className="text-lg text-gray-600">by {data[0]?.artists}</p>
+                    )}
+
+                    {selectedType === "genres" && (
+                      <p className="text-md text-gray-600">{data[0]?.count} of your top 50 artists</p>
+                    )}
+
+                    <p className="mt-4 text-sm text-gray-500 italic">
+                      {selectedType === "tracks" && `${userFirstName}'s most listened to track`}
+                      {selectedType === "artists" && `${userFirstName}'s GOAT artist`}
+                      {selectedType === "genres" && `${userFirstName}'s most loved genre`}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ):
+
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 font-fancy animate-fade-in">
+              {
+                data.map((item, index) => (
+                  <li
+                    key={index}
+                    className="bg-white border border-gray-200 rounded-2xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4"
+                  >
+
+                    {selectedType === "tracks" && item.albumCoverUrl && (
                       <img
-                        src={data[0].albumCoverUrl}
-                        alt={data[0].name}
-                        className="w-40 h-40 sm:w-52 sm:h-52 rounded-2xl object-cover shadow-xl border-4 border-white"
+                        src={item.albumCoverUrl}
+                        alt={item.name}
+                        className="w-20 h-20 rounded-xl object-cover shadow-sm"
                       />
                     )}
 
-                    {selectedType === "artists" && data[0]?.artistImageUrl && (
-                      <img
-                        src={data[0].artistImageUrl}
-                        alt={data[0].name}
-                        className="w-40 h-40 sm:w-52 sm:h-52 rounded-full object-cover shadow-xl border-4 border-white"
-                      />
+                    {selectedType === "artists" && item.artistImageUrl && (
+                        <img
+                          src={item.artistImageUrl}
+                          alt={item.name}
+                          className="w-20 h-20 rounded-full object-cover shadow-sm"
+                        />
                     )}
 
-                    <div className="space-y-2">
-                      <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-                        {selectedType === "genres" ? data[0]?.genre : data[0]?.name}
-                      </h2>
+                    <div className="flex flex-col justify-center">
+                      <div className="text-lg font-semibold text-gray-800">
+                        {selectedType === "tracks"
+                          ? item.name
+                          : selectedType === "artists"
+                          ? item.name
+                          : item.genre}
+                      </div>
 
                       {selectedType === "tracks" && (
-                        <p className="text-lg text-gray-600">by {data[0]?.artists}</p>
+                        <div className="text-sm text-gray-500 mt-1">by {item.artists}</div>
                       )}
 
                       {selectedType === "genres" && (
-                        <p className="text-md text-gray-600">{data[0]?.count} of your top 50 artists</p>
+                        <div className="text-sm text-gray-500 mt-1">
+                          {item.count} of your top 50 artists
+                        </div>
                       )}
-
-                      <p className="mt-4 text-sm text-gray-500 italic">
-                        {selectedType === "tracks" && `${userFirstName}'s most listened to track`}
-                        {selectedType === "artists" && `${userFirstName}'s GOAT artist`}
-                        {selectedType === "genres" && `${userFirstName}'s most loved genre`}
-                      </p>
                     </div>
-                </div>
-            )
-            : 
-            data.map((item, index) => (
-              <li
-                key={index}
-                className="bg-white border border-gray-200 rounded-2xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4"
-              >
-
-                {selectedType === "tracks" && item.albumCoverUrl && (
-                  <img
-                    src={item.albumCoverUrl}
-                    alt={item.name}
-                    className="w-20 h-20 rounded-xl object-cover shadow-sm"
-                  />
-                )}
-
-                {selectedType === "artists" && item.artistImageUrl && (
-                    <img
-                      src={item.artistImageUrl}
-                      alt={item.name}
-                      className="w-20 h-20 rounded-full object-cover shadow-sm"
-                    />
-                )}
-
-                <div className="flex flex-col justify-center">
-                  <div className="text-lg font-semibold text-gray-800">
-                    {selectedType === "tracks"
-                      ? item.name
-                      : selectedType === "artists"
-                      ? item.name
-                      : item.genre}
-                  </div>
-
-                  {selectedType === "tracks" && (
-                    <div className="text-sm text-gray-500 mt-1">by {item.artists}</div>
-                  )}
-
-                  {selectedType === "genres" && (
-                    <div className="text-sm text-gray-500 mt-1">
-                      {item.count} of your top 50 artists
-                    </div>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
+                  </li>
+                ))
+              }
+            </ul>
+          }
         </div>
       )}
     </div>
