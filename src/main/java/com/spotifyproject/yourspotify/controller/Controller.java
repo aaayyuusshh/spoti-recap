@@ -57,6 +57,25 @@ public class Controller {
         return ResponseEntity.ok(tokenResults);
     }
 
+    @PostMapping("/auth/refresh")
+    public ResponseEntity<?> refreshAccessToken(@RequestBody Map<String, String> body) {
+        String tokenEndpoint = "https://accounts.spotify.com/api/token";
+        String refreshToken = body.get("refresh_token");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setBasicAuth(clientId, clientSecret);
+
+        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+        requestBody.add("grant_type", "refresh_token");
+        requestBody.add("refresh_token", refreshToken);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(requestBody, headers);
+        ResponseEntity<Map> response = restTemplate.postForEntity(tokenEndpoint, request, Map.class);
+
+        return ResponseEntity.ok(response.getBody());
+    }
+
     @GetMapping("/top-tracks")
     public ResponseEntity<?> getTopTracks(
             @RequestHeader("Authorization") String accessToken,
