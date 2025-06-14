@@ -16,28 +16,32 @@ function App() {
 
   const fetchedRef = useRef(false);
   useEffect(() => {
-    const savedToken = localStorage.getItem("accessToken");
-    if(savedToken) {
-      console.log(`using saved token: ${savedToken}`);
-      setToken(savedToken);
-      return;
+    if(!fetchedRef.current) {
+      const savedToken = localStorage.getItem("accessToken");
+      if(savedToken) {
+        fetchedRef.current = true;
+        console.log(`using saved token: ${savedToken}`);
+        setToken(savedToken);
+        return;
+      }
+
+      const code = new URLSearchParams(window.location.search).get('code');
+      if (code) {
+        fetchedRef.current = true; // ensure this useEffect only runs once
+        console.log("no saved token");
+        fetch("http://localhost:8080/api/auth/token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code }),
+        })
+          .then(res => res.json())
+          .then((data) => {
+            setToken(data.access_token);
+            localStorage.setItem("accessToken", data.access_token);
+          });
+      }
     }
 
-    const code = new URLSearchParams(window.location.search).get('code');
-    if (code && !fetchedRef.current) {
-      fetchedRef.current = true; // ensure this useEffect only runs once
-      console.log("no saved token");
-      fetch("http://localhost:8080/api/auth/token", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
-      })
-        .then(res => res.json())
-        .then((data) => {
-          setToken(data.access_token);
-          localStorage.setItem("accessToken", data.access_token);
-        });
-    }
   }, []);
 
   useEffect(() => {
