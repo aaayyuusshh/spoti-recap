@@ -41,7 +41,6 @@ function App() {
           });
       }
     }
-
   }, []);
 
   useEffect(() => {
@@ -83,6 +82,13 @@ function App() {
     }
   }
 
+  function logout() {
+    localStorage.removeItem("accessToken");
+    setToken(null);
+    setData([]);
+    setUserFirstName(null);
+  }
+
   return (
     <div className="p-8">
       {!token ? (
@@ -97,6 +103,14 @@ function App() {
       ) :
       (
         <div>
+          <div className="flex justify-end w-full mb-4">
+            <button
+              onClick={logout}
+              className="text-sm text-red-500 hover:text-red-700 underline"
+            >
+              Logout
+            </button>
+          </div>
           <div className="flex flex-col items-center text-center">
             <h3 className="text-xl font-semibold text-gray-600">Customize Your View</h3>
             <div className="flex flex-wrap items-center gap-6 mt-4">
