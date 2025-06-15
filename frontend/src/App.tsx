@@ -38,6 +38,7 @@ function App() {
           .then((data) => {
             setToken(data.access_token);
             localStorage.setItem("accessToken", data.access_token);
+            window.history.replaceState({}, document.title, "/");
           });
       }
     }
