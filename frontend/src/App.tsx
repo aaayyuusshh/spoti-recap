@@ -57,20 +57,25 @@ function App() {
   },[token]);
 
   useEffect(() => {
-    if (token) {
-      console.log("lol got token");
-      const endpoint =
-        selectedType == "tracks" ? "top-tracks"
-        : selectedType == "artists" ?  "top-artists"
-        : "top-genres";
+    async function fetchTopData() {
+      const token = await getValidAccessToken();
+      if (token) {
+        console.log("lol got token");
+        const endpoint =
+          selectedType == "tracks" ? "top-tracks"
+          : selectedType == "artists" ?  "top-artists"
+          : "top-genres";
 
-      fetch(`http://localhost:8080/api/${endpoint}?timeRange=${timeRange}&amount=${amount}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then(res => res.json())
-        .then(data => setData(data));
+        fetch(`http://localhost:8080/api/${endpoint}?timeRange=${timeRange}&amount=${amount}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then(res => res.json())
+          .then(data => setData(data));
+      }
     }
-  }, [token, selectedType, timeRange, amount]);
+
+    fetchTopData();
+  }, [selectedType, timeRange, amount]);
 
   const loginUrl = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`;
 
@@ -90,6 +95,31 @@ function App() {
     setToken(null);
     setData([]);
     setUserFirstName(null);
+  }
+
+  async function getValidAccessToken(): Promise<string | null> {
+    const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+    const tokenExpiry = localStorage.getItem("tokenExpiry");
+
+    if(Date.now() >= tokenExpiry) {
+      console.log("access token refreshed...");
+      const res = await fetch("http://localhost:8080/api/auth/refresh", {
+          method: "POST",
+          headers: { "Content-Type": "application/json"},
+          body: JSON.stringify({refresh_token: refreshToken})
+        });
+
+        const data = await res.json();
+        if(data.access_token) {
+          localStorage.setItem("accessToken", data.access_token);
+          localStorage.setItem("tokenExpiry", Date.now() + (3600 * 1000));
+          setToken(data.access_token);
+          return data.access_token;
+        }
+    }
+
+    return accessToken;
   }
 
   return (
