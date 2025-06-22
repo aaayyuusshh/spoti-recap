@@ -41,6 +41,7 @@ function App() {
             localStorage.setItem("refreshToken", data.refresh_token);
             localStorage.setItem("tokenExpiry", Date.now() + (3600 * 1000));
             window.history.replaceState({}, document.title, "/");
+            fetchTopData()
           });
       }
     }
@@ -57,23 +58,6 @@ function App() {
   },[token]);
 
   useEffect(() => {
-    async function fetchTopData() {
-      const token = await getValidAccessToken();
-      if (token) {
-        console.log("lol got token");
-        const endpoint =
-          selectedType == "tracks" ? "top-tracks"
-          : selectedType == "artists" ?  "top-artists"
-          : "top-genres";
-
-        fetch(`http://localhost:8080/api/${endpoint}?timeRange=${timeRange}&amount=${amount}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-          .then(res => res.json())
-          .then(data => setData(data));
-      }
-    }
-
     fetchTopData();
   }, [selectedType, timeRange, amount]);
 
@@ -95,6 +79,23 @@ function App() {
     setToken(null);
     setData([]);
     setUserFirstName(null);
+  }
+
+  async function fetchTopData() {
+    const token = await getValidAccessToken();
+    if (token) {
+      console.log("lol got token");
+      const endpoint =
+        selectedType == "tracks" ? "top-tracks"
+        : selectedType == "artists" ?  "top-artists"
+        : "top-genres";
+
+      fetch(`http://localhost:8080/api/${endpoint}?timeRange=${timeRange}&amount=${amount}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then(res => res.json())
+        .then(data => setData(data));
+    }
   }
 
   async function getValidAccessToken(): Promise<string | null> {
