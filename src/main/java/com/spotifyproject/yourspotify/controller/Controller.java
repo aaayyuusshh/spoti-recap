@@ -236,6 +236,7 @@ public class Controller {
 
     @GetMapping("/user")
     public ResponseEntity<?> getUserName(@RequestHeader("Authorization") String accessToken) {
+        System.out.println("in /user");
         String userProfileEndpoint = "https://api.spotify.com/v1/me";
 
         HttpHeaders headers = new HttpHeaders();

@@ -219,6 +219,19 @@ function App() {
                   </div>
                 )}
 
+                {selectedType === "genres" && data[0]?.genreArtistImageUrls && data[0].genreArtistImageUrls.length > 0 && (
+                  <div className="grid grid-cols-3 gap-2 mt-4 w-full max-w-xs mx-auto">
+                    {data[0].genreArtistImageUrls.slice(0, 9).map((imgUrl, idx) => (
+                      <img
+                        key={idx}
+                        src={imgUrl}
+                        alt={`Top artist ${idx + 1}`}
+                        className="w-full aspect-square object-cover rounded-md shadow-sm border border-white"
+                      />
+                    ))}
+                  </div>
+                )}
+
                 <div className="space-y-4">
                   <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
                     {selectedType === "genres" ? data[0]?.genre : data[0]?.name}
