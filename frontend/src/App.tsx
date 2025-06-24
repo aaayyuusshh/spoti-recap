@@ -124,194 +124,161 @@ function App() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8 min-h-screen">
       {!token ? (
-        <a
-          href={loginUrl}
-          className="bg-green-500 text-white p-4 rounded"
-          target="_self"
-          rel="noopener noreferrer"
-        >
+        <a href={loginUrl} className="bg-green-500 text-white p-4 rounded">
           Login with Spotify
         </a>
-      ) :
-      (
+      ) : (
         <div>
           <div className="flex justify-end w-full mb-4">
-            <button
-              onClick={logout}
-              className="text-sm text-red-500 hover:text-red-700 underline"
-            >
+            <button onClick={logout} className="text-sm text-red-500 hover:text-red-700 underline">
               Logout
             </button>
           </div>
+
           <div className="flex flex-col items-center text-center">
-            <h3 className="text-xl font-semibold text-gray-600">Customize Your View</h3>
-            <div className="flex flex-wrap items-center gap-6 mt-4">
+            <h3 className="text-xl font-semibold text-gray-700">Customize Your View</h3>
+            <div className="flex flex-col sm:flex-row flex-wrap items-center gap-4 sm:gap-6 mt-4 w-full max-w-md">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">View</label>
                 <select
                   value={selectedType}
-                  onChange={(e) => {
-                    setData([]);
-                    setSelectedType(e.target.value as "tracks" | "artists" | "genres");
-                  }}
-                  className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                  onChange={(e) => { setData([]); setSelectedType(e.target.value as any); }}
+                  className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm"
                 >
                   <option value="tracks">Top Tracks</option>
                   <option value="artists">Top Artists</option>
                   <option value="genres">Top Genres</option>
                 </select>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Time Range</label>
                 <select
                   value={timeRange}
-                  onChange={(e) => {
-                    setTimeRange(e.target.value as "short_term" | "medium_term" | "long_term");
-                  }}
-                  className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                  onChange={(e) => setTimeRange(e.target.value as any)}
+                  className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm"
                 >
                   <option value="short_term">1 month</option>
                   <option value="medium_term">6 months</option>
                   <option value="long_term">All time</option>
                 </select>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
                 <select
                   value={amount}
-                  onChange={(e) => {
-                    setAmount(e.target.value as "10" | "1");
-                  }}
-                  className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                  onChange={(e) => setAmount(e.target.value as any)}
+                  className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm"
                 >
                   <option value="10">Top 10</option>
                   <option value="1">GOAT</option>
                 </select>
               </div>
             </div>
-
-             <div className="h-px bg-gray-300 my-6 w-[450px]" />
+            <div className="h-px bg-gray-300 my-6 w-full max-w-sm" />
           </div>
 
           {amount === "10" && (
-            <h2 className="text-2xl font-bold text-gray-700">
-                { selectedType === "tracks"
-                  ? `${userFirstName}'s Top Tracks 💿`
-                  : selectedType === "artists"
-                  ? `${userFirstName}'s Top Artists 🧑‍🎤 `
-                  : `${userFirstName}'s Top Genres 🎼`
-                }
+            <h2 className="text-2xl font-bold text-gray-700 text-center">
+              {selectedType === "tracks"
+                ? `${userFirstName}'s Top Tracks 💿`
+                : selectedType === "artists"
+                  ? `${userFirstName}'s Top Artists 🧑‍🎤`
+                  : `${userFirstName}'s Top Genres 🎼`}
             </h2>
           )}
 
-          {
-            amount == "1" ? (
-              <div className="flex justify-center w-full">
-                <div className="w-[360px] sm:w-[480px] md:w-[640px] h-[520px] sm:h-[600px] md:h-[700px] bg-gradient-to-br
-                  from-yellow-200 via-yellow-50 to-white border-4 border-yellow-400 rounded-3xl shadow-2xl px-6 py-8 flex
-                  flex-col items-center text-center gap-5 animate-fade-in">
+          {amount === "1" ? (
+            <div className="flex justify-center w-full px-2 sm:px-4 mt-6">
+              <div className="relative w-full max-w-xs sm:max-w-md md:max-w-2xl h-auto p-6 sm:p-8 md:p-10 bg-gradient-to-br from-yellow-200 via-yellow-50 to-white border-4 border-yellow-400 rounded-3xl shadow-2xl flex flex-col items-center text-center gap-6 animate-fade-in">
 
-                  <div className="text-5xl sm:text-5xl md:text-7xl lg:text-7xl opacity-80">👑</div>
+                {/*  <div className="absolute top-4 right-6 text-black/30 text-xl animate-bounce">🎶</div> */}
 
-                  {selectedType === "tracks" && data[0]?.albumCoverUrl && (
-                    <div className="relative">
-                      <div className="absolute inset-0 rounded-full blur-2xl bg-yellow-400 opacity-40 scale-110" />
-                      <img
-                        src={data[0].albumCoverUrl}
-                        alt={data[0].name}
-                        className="relative z-10 w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-80 lg:h-80 rounded-2xl object-cover shadow-xl border-4 border-white"
-                      />
-                    </div>
-                  )}
+                <div className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl">👑</div>
 
-                  {selectedType === "artists" && data[0]?.artistImageUrl && (
-                     <div className="relative">
-                        <div className="absolute inset-0 rounded-full blur-2xl bg-yellow-400 opacity-40 scale-110" />
-
-                        <img
-                          src={data[0].artistImageUrl}
-                          alt={data[0].name}
-                          className="relative z-10  w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-80 lg:h-80 rounded-full object-cover shadow-xl border-4 border-white"
-                        />
-                     </div>
-                  )}
-
-
-                 <div className="space-y-4">
-                   <h2 className="text-3xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
-                      {selectedType === "genres" ? data[0]?.genre : data[0]?.name}
-                    </h2>
-
-                    {selectedType === "tracks" && (
-                      <p className="text-lg text-gray-600">by {data[0]?.artists}</p>
-                    )}
-
-                    {selectedType === "genres" && (
-                      <p className="text-md text-gray-600">{data[0]?.count} of your top 50 artists</p>
-                    )}
-
-                    <p className="mt-14 text-xs text-gray-500 italic">
-                      {selectedType === "tracks" && `${userFirstName}'s most listened to track ${getTimeRangeLabel(timeRange)}`}
-                      {selectedType === "artists" && `${userFirstName}'s GOAT artist ${getTimeRangeLabel(timeRange)}`}
-                      {selectedType === "genres" && `${userFirstName}'s most loved genre ${getTimeRangeLabel(timeRange)}`}
-                    </p>
+                {selectedType === "tracks" && data[0]?.albumCoverUrl && (
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-full blur-2xl bg-yellow-400 opacity-40 scale-110" />
+                    <img
+                      src={data[0].albumCoverUrl}
+                      alt={data[0].name}
+                      className="relative z-10 w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80 max-w-[85vw] rounded-2xl object-cover shadow-xl border-4 border-white"
+                    />
                   </div>
+                )}
+
+                {selectedType === "artists" && data[0]?.artistImageUrl && (
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-full blur-2xl bg-yellow-400 opacity-40 scale-110" />
+                    <img
+                      src={data[0].artistImageUrl}
+                      alt={data[0].name}
+                      className="relative z-10 w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80 max-w-[85vw] rounded-full object-cover shadow-xl border-4 border-white"
+                    />
+                  </div>
+                )}
+
+                <div className="space-y-4">
+                  <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
+                    {selectedType === "genres" ? data[0]?.genre : data[0]?.name}
+                  </h2>
+                  {selectedType === "tracks" && (
+                    <p className="text-lg text-gray-600">by {data[0]?.artists}</p>
+                  )}
+                  {selectedType === "genres" && (
+                    <p className="text-md text-gray-600">{data[0]?.count} of your top 50 artists</p>
+                  )}
+                  <p className="mt-14 text-xs text-gray-500 italic">
+                    {selectedType === "tracks" && `${userFirstName}'s most listened to track ${getTimeRangeLabel(timeRange)}`}
+                    {selectedType === "artists" && `${userFirstName}'s GOAT artist ${getTimeRangeLabel(timeRange)}`}
+                    {selectedType === "genres" && `${userFirstName}'s most loved genre ${getTimeRangeLabel(timeRange)}`}
+                  </p>
                 </div>
               </div>
-            ):
-
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 font-fancy animate-fade-in">
-              {
-                data.map((item, index) => (
-                  <li
-                    key={index}
-                    className="bg-white border border-gray-200 rounded-2xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4"
-                  >
-
-                    {selectedType === "tracks" && item.albumCoverUrl && (
-                      <img
-                        src={item.albumCoverUrl}
-                        alt={item.name}
-                        className="w-20 h-20 rounded-xl object-cover shadow-sm"
-                      />
-                    )}
-
-                    {selectedType === "artists" && item.artistImageUrl && (
-                        <img
-                          src={item.artistImageUrl}
-                          alt={item.name}
-                          className="w-20 h-20 rounded-full object-cover shadow-sm"
-                        />
-                    )}
-
-                    <div className="flex flex-col justify-center">
-                      <div className="text-lg font-semibold text-gray-800">
-                        {selectedType === "tracks"
-                          ? item.name
-                          : selectedType === "artists"
+            </div>
+          ) : (
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 font-fancy animate-fade-in px-2 sm:px-4">
+              {data.map((item, index) => (
+                <li
+                  key={index}
+                  className="bg-white border border-gray-200 rounded-2xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4"
+                >
+                  {selectedType === "tracks" && item.albumCoverUrl && (
+                    <img
+                      src={item.albumCoverUrl}
+                      alt={item.name}
+                      className="w-20 h-20 rounded-xl object-cover shadow-sm"
+                    />
+                  )}
+                  {selectedType === "artists" && item.artistImageUrl && (
+                    <img
+                      src={item.artistImageUrl}
+                      alt={item.name}
+                      className="w-20 h-20 rounded-full object-cover shadow-sm"
+                    />
+                  )}
+                  <div className="flex flex-col justify-center">
+                    <div className="text-lg font-semibold text-gray-800">
+                      {selectedType === "tracks"
+                        ? item.name
+                        : selectedType === "artists"
                           ? item.name
                           : item.genre}
-                      </div>
-
-                      {selectedType === "tracks" && (
-                        <div className="text-sm text-gray-500 mt-1">by {item.artists}</div>
-                      )}
-
-                      {selectedType === "genres" && (
-                        <div className="text-sm text-gray-500 mt-1">
-                          {item.count} of your top 50 artists
-                        </div>
-                      )}
                     </div>
-                  </li>
-                ))
-              }
+                    {selectedType === "tracks" && (
+                      <div className="text-sm text-gray-500 mt-1">by {item.artists}</div>
+                    )}
+                    {selectedType === "genres" && (
+                      <div className="text-sm text-gray-500 mt-1">
+                        {item.count} of your top 50 artists
+                      </div>
+                    )}
+                  </div>
+                </li>
+              ))}
             </ul>
-          }
+          )}
         </div>
       )}
     </div>
