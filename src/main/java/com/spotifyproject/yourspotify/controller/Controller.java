@@ -152,11 +152,11 @@ public class Controller {
 
         // simplifying raw response
         // @TODO extract this simplification process into a function
-        List<Map<String, String>> simplifiedResponse = new ArrayList<>();
+        List<Map<String, Object>> simplifiedResponse = new ArrayList<>();
         List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
 
         for(Map<String, Object> item: items) {
-            Map<String, String> artistInfo = new HashMap<>();
+            Map<String, Object> artistInfo = new HashMap<>();
 
             String artistName = (String) item.get("name");
             artistInfo.put("name", artistName);
@@ -165,6 +165,9 @@ public class Controller {
             List<Map<String, Object>> images = (List<Map<String, Object>>) item.get("images");
             String artistImageUrl = (String) images.get(0).get("url");
             artistInfo.put("artistImageUrl", artistImageUrl);
+
+            List<String> artistGenres = (List<String>) item.get("genres");
+            artistInfo.put("genres", artistGenres.stream().limit(2).collect(Collectors.toList()));
 
             simplifiedResponse.add(artistInfo);
         }
