@@ -191,11 +191,11 @@ function App() {
 
           {amount === "1" ? (
             <div className="flex justify-center w-full px-2 sm:px-4 mt-6">
-              <div className="relative w-full max-w-xs sm:max-w-md md:max-w-2xl h-auto p-6 sm:p-8 md:p-10 bg-gradient-to-br from-yellow-200 via-yellow-50 to-white border-4 border-yellow-400 rounded-3xl shadow-2xl flex flex-col items-center text-center gap-6 animate-fade-in">
+              <div className="relative w-full max-w-xl sm:max-w-xl md:max-w-2xl h-auto p-6 sm:p-8 md:p-10 bg-gradient-to-br from-yellow-200 via-yellow-50 to-white border-4 border-yellow-400 rounded-3xl shadow-2xl flex flex-col items-center text-center gap-6 animate-fade-in">
 
                 {/*  <div className="absolute top-4 right-6 text-black/30 text-xl animate-bounce">🎶</div> */}
 
-                <div className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl">👑</div>
+                <div className="text-5xl sm:text-5xl md:text-7xl lg:text-7xl opacity-80">👑</div>
 
                 {selectedType === "tracks" && data[0]?.albumCoverUrl && (
                   <div className="relative">
