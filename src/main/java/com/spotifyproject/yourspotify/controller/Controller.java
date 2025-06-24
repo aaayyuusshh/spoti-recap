@@ -196,12 +196,18 @@ public class Controller {
 
         List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
         Map<String, Integer> genreFrequency = new HashMap<>();
+        Map<String, List<String>> genreArtistImageMap = new HashMap<>();
 
         for(Map<String, Object> item: items) {
             ArrayList<String> genres = (ArrayList<String>) item.get("genres");
+            List<Map<String, Object>> artistImages = (List<Map<String, Object>>)item.get("images");
+            String artistImageUrl = (String) artistImages.get(0).get("url");
+
 
             for(String genre: genres) {
                 genreFrequency.put(genre, genreFrequency.getOrDefault(genre, 0) + 1);
+                genreArtistImageMap.putIfAbsent(genre, new ArrayList<>());
+                genreArtistImageMap.get(genre).add(artistImageUrl);
             }
         }
 
@@ -214,6 +220,13 @@ public class Controller {
                     Map<String, Object> genreData = new HashMap<>();
                     genreData.put("genre", entry.getKey());
                     genreData.put("count", entry.getValue());
+
+                    List<String> artistImagesForGenre = genreArtistImageMap.getOrDefault(entry.getKey(), Collections.emptyList());
+                    genreData.put("genreArtistImageUrls",
+                        artistImagesForGenre.stream()
+                                .limit(9)
+                                .collect(Collectors.toList()));
+
                     return genreData;
                 })
                 .collect(Collectors.toList());
