@@ -211,29 +211,38 @@ function App() {
           {
             amount == "1" ? (
               <div className="flex justify-center w-full">
-                <div className="w-[320px] sm:w-[360px] md:w-[420px] h-[480px] sm:h-[520px] md:h-[580px] bg-gradient-to-br
-                 from-yellow-200 via-yellow-50 to-white border-4 border-yellow-400 rounded-3xl shadow-2xl px-6 py-8 flex
-                 flex-col items-center text-center gap-5 animate-fade-in">
-                  <div className="text-2xl sm:text-6xl opacity-80">👑</div>
+                <div className="w-[360px] sm:w-[480px] md:w-[640px] h-[520px] sm:h-[600px] md:h-[700px] bg-gradient-to-br
+                  from-yellow-200 via-yellow-50 to-white border-4 border-yellow-400 rounded-3xl shadow-2xl px-6 py-8 flex
+                  flex-col items-center text-center gap-5 animate-fade-in">
+
+                  <div className="text-5xl sm:text-5xl md:text-7xl lg:text-7xl opacity-80">👑</div>
 
                   {selectedType === "tracks" && data[0]?.albumCoverUrl && (
-                    <img
-                      src={data[0].albumCoverUrl}
-                      alt={data[0].name}
-                      className="w-40 h-40 sm:w-52 sm:h-52 rounded-2xl object-cover shadow-xl border-4 border-white"
-                    />
+                    <div className="relative">
+                      <div className="absolute inset-0 rounded-full blur-2xl bg-yellow-400 opacity-40 scale-110" />
+                      <img
+                        src={data[0].albumCoverUrl}
+                        alt={data[0].name}
+                        className="relative z-10 w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-80 lg:h-80 rounded-2xl object-cover shadow-xl border-4 border-white"
+                      />
+                    </div>
                   )}
 
                   {selectedType === "artists" && data[0]?.artistImageUrl && (
-                    <img
-                      src={data[0].artistImageUrl}
-                      alt={data[0].name}
-                      className="w-40 h-40 sm:w-52 sm:h-52 rounded-full object-cover shadow-xl border-4 border-white"
-                    />
+                     <div className="relative">
+                        <div className="absolute inset-0 rounded-full blur-2xl bg-yellow-400 opacity-40 scale-110" />
+
+                        <img
+                          src={data[0].artistImageUrl}
+                          alt={data[0].name}
+                          className="relative z-10  w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-80 lg:h-80 rounded-full object-cover shadow-xl border-4 border-white"
+                        />
+                     </div>
                   )}
 
-                  <div className="space-y-2">
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+
+                 <div className="space-y-4">
+                   <h2 className="text-3xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
                       {selectedType === "genres" ? data[0]?.genre : data[0]?.name}
                     </h2>
 
