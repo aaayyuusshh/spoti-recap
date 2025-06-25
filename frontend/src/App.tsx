@@ -203,7 +203,7 @@ function App() {
                     <img
                       src={data[0].albumCoverUrl}
                       alt={data[0].name}
-                      className="relative z-10 w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80 max-w-[85vw] rounded-2xl object-cover shadow-xl border-4 border-white"
+                      className="relative z-10 w-60 h-60 sm:w-64 sm:h-64 md:w-80 md:h-80 max-w-[85vw] rounded-2xl object-cover shadow-xl border-4 border-white"
                     />
                   </div>
                 )}
@@ -238,6 +238,9 @@ function App() {
                   </h2>
                   {selectedType === "tracks" && (
                     <p className="text-lg text-gray-600">by {data[0]?.artists}</p>
+                  )}
+                  {selectedType === "artists" && (
+                    <p className="text-lg text-gray-600">🎶</p>
                   )}
                   {selectedType === "genres" && (
                     <p className="text-md text-gray-600">{data[0]?.count} of your top 50 artists</p>
