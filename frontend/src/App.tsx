@@ -64,7 +64,6 @@ function App() {
     fetchTopData();
   }, [selectedType, timeRange, amount]);
 
-  const loginUrl = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}`;
 
   function getTimeRangeLabel(timeRange: "short_term" | "medium_term" | "long_term"): string {
     switch(timeRange) {
@@ -79,6 +78,8 @@ function App() {
 
   function logout() {
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("tokenExpiry");
     setToken(null);
     setData([]);
     setUserFirstName(null);
@@ -146,6 +147,8 @@ function App() {
       }
     }, 100);
   }
+
+  const loginUrl = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}&show_dialog=true`;
 
   return (
   <>
