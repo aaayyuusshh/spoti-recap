@@ -1,4 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
+import html2canvas from 'html2canvas-pro';
+import { DownloadGoatCard } from "./DownloadGoatCard";
+import { DownloadTop10Card } from "./DownloadTop10Card";
 
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
@@ -122,8 +125,30 @@ function App() {
 
     return accessToken;
   }
+  
+  const downloadRef = useRef<HTMLDivElement>(null);
+  const [showDownloadCard, setShowDownloadCard] = useState(false);
+  async function handleDownload() {
+    setShowDownloadCard(true);
+    setTimeout(async () => {
+      if (downloadRef.current) {
+        const canvas = await html2canvas(downloadRef.current, {
+          useCORS: true,
+          backgroundColor: "#fff",
+          width: 1080,
+          height: 1920
+        });
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = `${userFirstName}_spotify_${selectedType}_${amount}.png`;
+        link.click();
+        setShowDownloadCard(false);
+      }
+    }, 100);
+  }
 
   return (
+  <>
     <div className="p-4 sm:p-6 md:p-8 min-h-screen">
       {!token ? (
         <a href={loginUrl} className="bg-green-500 text-white p-4 rounded">
@@ -132,6 +157,12 @@ function App() {
       ) : (
         <div>
           <div className="flex justify-end w-full mb-4">
+            <button
+              className="fixed bottom-8 right-8 z-40 bg-green-600 text-white px-6 py-3 rounded-xl shadow-xl"
+              onClick={handleDownload}
+            >
+              Download
+            </button>            
             <button onClick={logout} className="text-sm text-red-500 hover:text-red-700 underline">
               Logout
             </button>
@@ -298,6 +329,40 @@ function App() {
         </div>
       )}
     </div>
+
+    {showDownloadCard && (
+      <div
+        style={{
+          position: "fixed",
+          left: "-200vw",
+          top: 0,
+          width: 1080,
+          height: 1920,
+          zIndex: -9999,
+          background: "#fff",
+          overflow: "hidden",
+        }}
+      >
+        <div ref={downloadRef}>
+          {amount === "1" ? (
+            <DownloadGoatCard
+              data={data}
+              selectedType={selectedType}
+              userFirstName={userFirstName}
+              timeRange={timeRange}
+            />
+          ) : (
+            <DownloadTop10Card
+              data={data}
+              selectedType={selectedType}
+              userFirstName={userFirstName}
+              timeRange={timeRange}
+            />
+          )}
+        </div>
+      </div>
+    )}
+  </>
   );
 }
 
