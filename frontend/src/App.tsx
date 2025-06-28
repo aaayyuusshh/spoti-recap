@@ -160,9 +160,9 @@ function App() {
     (
       <div className="p-4 sm:p-6 md:p-8 min-h-screen">
           <div>
-            <div className="flex justify-end w-full mb-4">
+            <div className="flex justify-end w-full">
               <button
-                className="fixed bottom-8 right-8 z-40 bg-green-600 text-white px-6 py-3 rounded-xl shadow-xl"
+                className="fixed bottom-8 right-8 z-40 bg-green-600 text-white px-6 py-3 rounded-xl shadow-xl cursor-pointer"
                 onClick={handleDownload}
               >
                 Download
@@ -293,20 +293,20 @@ function App() {
                 {data.map((item, index) => (
                   <li
                     key={index}
-                    className="bg-white border border-gray-200 rounded-2xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4"
+                    className="bg-white border border-gray-200 rounded-2xl p-2 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4"
                   >
                     {selectedType === "tracks" && item.albumCoverUrl && (
                       <img
                         src={item.albumCoverUrl}
                         alt={item.name}
-                        className="w-20 h-20 rounded-xl object-cover shadow-sm"
+                        className="w-18 h-18 rounded-xl object-cover shadow-sm"
                       />
                     )}
                     {selectedType === "artists" && item.artistImageUrl && (
                       <img
                         src={item.artistImageUrl}
                         alt={item.name}
-                        className="w-20 h-20 rounded-full object-cover shadow-sm"
+                        className="w-18 h-18 rounded-full object-cover shadow-sm"
                       />
                     )}
                     <div className="flex flex-col justify-center">
