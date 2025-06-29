@@ -20,6 +20,7 @@ function App() {
 
   const fetchedRef = useRef(false);
   useEffect(() => {
+    console.log("in login useEffect");
     if(!fetchedRef.current) {
       const savedToken = localStorage.getItem("accessToken");
       if(savedToken) {
@@ -45,7 +46,7 @@ function App() {
             localStorage.setItem("refreshToken", data.refresh_token);
             localStorage.setItem("tokenExpiry", Date.now() + (3600 * 1000));
             window.history.replaceState({}, document.title, "/");
-            fetchTopData()
+            // fetchTopData()
           });
       }
     }
@@ -62,8 +63,10 @@ function App() {
   },[token]);
 
   useEffect(() => {
+    console.log("fetch use effect running");
     fetchTopData();
-  }, [selectedType, timeRange, amount]);
+    console.log("x");
+  }, [token, selectedType, timeRange, amount]);
 
 
   function getTimeRangeLabel(timeRange: "short_term" | "medium_term" | "long_term"): string {
@@ -87,8 +90,17 @@ function App() {
   }
 
   async function fetchTopData() {
-    const token = await getValidAccessToken();
-    if (token) {
+    console.log('in fetchTopData');
+    console.log(`token: ${token}`);
+
+    if(!token) {
+      console.log('No token; not fetching.');
+      return;
+    }
+   
+    const validToken = await getValidAccessToken();
+    console.log(`validtToken: ${validToken}`);
+    if (validToken) {
       console.log("lol got token");
       const endpoint =
         selectedType == "tracks" ? "top-tracks"
@@ -104,11 +116,22 @@ function App() {
   }
 
   async function getValidAccessToken(): Promise<string | null> {
+    console.log('in getValidAccessToken');
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
     const tokenExpiry = localStorage.getItem("tokenExpiry");
 
-    if(Date.now() >= tokenExpiry) {
+    if(!accessToken || ! refreshToken || !tokenExpiry) {
+       console.log("No token/refresh/expiry found; not fetching.");
+      return null;
+    }
+    
+    console.log(`refresh token: ${refreshToken}`);
+    console.log(`token expiry: ${tokenExpiry}`);
+    console.log(`access token: ${accessToken}`);
+    console.log(`state access token: ${token}`);
+
+    if(Date.now() >= Number(tokenExpiry)) {
       console.log("access token refreshed...");
       const res = await fetch("http://localhost:8080/api/auth/refresh", {
           method: "POST",
@@ -119,9 +142,13 @@ function App() {
         const data = await res.json();
         if(data.access_token) {
           localStorage.setItem("accessToken", data.access_token);
-          localStorage.setItem("tokenExpiry", Date.now() + (3600 * 1000));
+          localStorage.setItem("tokenExpiry", (Date.now() + (3600 * 1000)).toString());
           setToken(data.access_token);
           return data.access_token;
+        } 
+        else {
+          console.log("Failed to refresh token.");
+          return null;
         }
     }
 
