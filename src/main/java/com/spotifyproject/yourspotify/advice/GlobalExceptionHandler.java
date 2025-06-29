@@ -15,4 +15,13 @@ public class GlobalExceptionHandler {
                 .badRequest()
                 .body(Map.of("error", "Missing or invalid request body"));
     }
+
+    // triggered for uncaught exceptions
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleOtherExceptions(Exception ex) {
+        ex.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("error", "Internal server error"));
+    }
 }
