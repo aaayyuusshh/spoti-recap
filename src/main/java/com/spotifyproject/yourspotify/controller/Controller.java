@@ -31,49 +31,76 @@ public class Controller {
 
     @PostMapping("/auth/token")
     public ResponseEntity<?> getAccessToken(@RequestBody Map<String, String> body) {
-        System.out.println("--------------------------------------");
-        System.out.println("in getAccessToken " + body.get("code"));
-        String tokenEndpoint = "https://accounts.spotify.com/api/token";
-        String code = body.get("code");
+        try {
+            System.out.println("--------------------------------------");
+            System.out.println("in getAccessToken " + body.get("code"));
+            String tokenEndpoint = "https://accounts.spotify.com/api/token";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.setBasicAuth(clientId, clientSecret);
+            String code = body.get("code");
+            if(code == null || code.isBlank()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Missing code in body"));
+            }
 
-        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-        form.add("grant_type", "authorization_code");
-        form.add("code", code);
-        form.add("redirect_uri", redirectUri);
-        System.out.println("form: " + form);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.setBasicAuth(clientId, clientSecret);
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(form, headers);
-        ResponseEntity<Map> response = restTemplate.postForEntity(tokenEndpoint, request, Map.class);
-        System.out.println("spotify token response: " + response.getBody());
+            MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+            form.add("grant_type", "authorization_code");
+            form.add("code", code);
+            form.add("redirect_uri", redirectUri);
+            System.out.println("form: " + form);
 
-        Map<String, String> tokenResults = new HashMap<>();
-        tokenResults.put("access_token", (String)response.getBody().get("access_token"));
-        tokenResults.put("refresh_token", (String)response.getBody().get("refresh_token"));
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(form, headers);
+            ResponseEntity<Map> response = restTemplate.postForEntity(tokenEndpoint, request, Map.class);
+            if(!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(Map.of("error", "Failed to fetch token from Spotify"));
+            }
 
-        return ResponseEntity.ok(tokenResults);
+            System.out.println("spotify token response: " + response.getBody());
+
+            Map<String, String> tokenResults = new HashMap<>();
+            tokenResults.put("access_token", (String)response.getBody().get("access_token"));
+            tokenResults.put("refresh_token", (String)response.getBody().get("refresh_token"));
+
+            return ResponseEntity.ok(tokenResults);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Internal server error"));
+        }
     }
 
     @PostMapping("/auth/refresh")
     public ResponseEntity<?> refreshAccessToken(@RequestBody Map<String, String> body) {
-        String tokenEndpoint = "https://accounts.spotify.com/api/token";
-        String refreshToken = body.get("refresh_token");
+        try {
+            String tokenEndpoint = "https://accounts.spotify.com/api/token";
+            String refreshToken = body.get("refresh_token");
+            if (refreshToken == null || refreshToken.isBlank()) {
+                System.out.println("--refresh error--");
+                return ResponseEntity.badRequest().body(Map.of("error", "Missing refresh_token in body"));
+            }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.setBasicAuth(clientId, clientSecret);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.setBasicAuth(clientId, clientSecret);
 
-        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-        requestBody.add("grant_type", "refresh_token");
-        requestBody.add("refresh_token", refreshToken);
+            MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+            requestBody.add("grant_type", "refresh_token");
+            requestBody.add("refresh_token", refreshToken);
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(requestBody, headers);
-        ResponseEntity<Map> response = restTemplate.postForEntity(tokenEndpoint, request, Map.class);
+            HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(requestBody, headers);
+            ResponseEntity<Map> response = restTemplate.postForEntity(tokenEndpoint, request, Map.class);
+            if(!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(Map.of("error", "Failed to refresh token from Spotify"));
+            }
 
-        return ResponseEntity.ok(response.getBody());
+            return ResponseEntity.ok(response.getBody());
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Internal server error"));
+        }
     }
 
     @GetMapping("/top-tracks")
