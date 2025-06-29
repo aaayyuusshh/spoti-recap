@@ -109,52 +109,65 @@ public class Controller {
             @RequestParam(name = "timeRange", defaultValue = "long_term") String timeRange,
             @RequestParam(name = "amount", defaultValue = "10") String amount
     ) {
+        try {
+            System.out.println("--------------------------------------");
+            System.out.println("in get top tracks: " + accessToken);
 
-        System.out.println("--------------------------------------");
-        System.out.println("in get top tracks: " + accessToken);
+            if (accessToken == null || !accessToken.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid access token"));
+            }
 
-        String topTracksEndpoint = "https://api.spotify.com/v1/me/top/tracks?limit=" + amount + "&time_range=" + timeRange;
+            String topTracksEndpoint = "https://api.spotify.com/v1/me/top/tracks?limit=" + amount + "&time_range=" + timeRange;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", accessToken);
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", accessToken);
 
-        HttpEntity<String> request = new HttpEntity<>(headers);
+            HttpEntity<String> request = new HttpEntity<>(headers);
 
-        ResponseEntity<Map> response = restTemplate.exchange(
-                topTracksEndpoint,
-                HttpMethod.GET,
-                request,
-                Map.class
-        );
+            ResponseEntity<Map> response = restTemplate.exchange(
+                    topTracksEndpoint,
+                    HttpMethod.GET,
+                    request,
+                    Map.class
+            );
 
-        // simplifying the raw response bc it is BULKY
-        // @TODO extract this simplification process into a function
-        List<Map<String, String>> simplifiedResponse = new ArrayList<>();
-        List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
+            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(Map.of("error", "Failed to fetch top tracks from Spotify"));
+            }
 
-        for(Map<String, Object> item : items) {
-            String trackName = (String) item.get("name");
+            // simplifying the raw response bc it is BULKY
+            // @TODO extract this simplification process into a function
+            List<Map<String, String>> simplifiedResponse = new ArrayList<>();
+            List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
 
-            List<Map<String, Object>> artists = (List<Map<String, Object>>) item.get("artists");
-            String artistNames = artists.stream()
-                    .map(a -> (String) a.get("name"))
-                    .collect(Collectors.joining(", "));
+            for(Map<String, Object> item : items) {
+                String trackName = (String) item.get("name");
 
-            System.out.println("🎵 " + trackName + " by " + artistNames);
+                List<Map<String, Object>> artists = (List<Map<String, Object>>) item.get("artists");
+                String artistNames = artists.stream()
+                        .map(a -> (String) a.get("name"))
+                        .collect(Collectors.joining(", "));
 
-            Map<String, Object> album = (Map<String, Object>) item.get("album");
-            List<Map<String, Object>> images = (List<Map<String, Object>>) album.get("images");
-            String albumCoverUrl = (String) images.get(0).get("url");
+                System.out.println("🎵 " + trackName + " by " + artistNames);
 
-            Map<String, String> track = new HashMap<>();
-            track.put("name", trackName);
-            track.put("artists", artistNames);
-            track.put("albumCoverUrl", albumCoverUrl);
-            simplifiedResponse.add(track);
+                Map<String, Object> album = (Map<String, Object>) item.get("album");
+                List<Map<String, Object>> images = (List<Map<String, Object>>) album.get("images");
+                String albumCoverUrl = (String) images.get(0).get("url");
+
+                Map<String, String> track = new HashMap<>();
+                track.put("name", trackName);
+                track.put("artists", artistNames);
+                track.put("albumCoverUrl", albumCoverUrl);
+                simplifiedResponse.add(track);
+            }
+
+            // simplified version:  [{name: "Drake", song: "Redemption"}, {name: "Jamesy", song: "Wagwan Remix"}]
+            return ResponseEntity.ok(simplifiedResponse);
         }
-
-        // simplified version:  [{name: "Drake", song: "Redemption"}, {name: "Jamesy", song: "Wagwan Remix"}]
-        return ResponseEntity.ok(simplifiedResponse);
+        catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Internal server error"));
+        }
     }
 
     @GetMapping("/top-artists")
@@ -163,44 +176,59 @@ public class Controller {
             @RequestParam(name = "timeRange", defaultValue = "long_term") String timeRange,
             @RequestParam(name = "amount", defaultValue = "10") String amount
     ) {
-        String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=" + amount + "&time_range=" + timeRange;
+        try  {
+            String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=" + amount + "&time_range=" + timeRange;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", accessToken);
+            if (accessToken == null || !accessToken.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid access token"));
+            }
 
-        HttpEntity<String> request = new HttpEntity<>(headers);
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", accessToken);
 
-        ResponseEntity<Map> response = restTemplate.exchange(
-                topArtistsEndpoint,
-                HttpMethod.GET,
-                request,
-                Map.class
-        );
+            HttpEntity<String> request = new HttpEntity<>(headers);
 
-        // simplifying raw response
-        // @TODO extract this simplification process into a function
-        List<Map<String, Object>> simplifiedResponse = new ArrayList<>();
-        List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
+            ResponseEntity<Map> response = restTemplate.exchange(
+                    topArtistsEndpoint,
+                    HttpMethod.GET,
+                    request,
+                    Map.class
+            );
 
-        for(Map<String, Object> item: items) {
-            Map<String, Object> artistInfo = new HashMap<>();
+            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(Map.of("error", "Failed to fetch top artists from Spotify"));
+            }
 
-            String artistName = (String) item.get("name");
-            artistInfo.put("name", artistName);
-            System.out.println("🎤 " + artistName);
+            // simplifying raw response
+            // @TODO extract this simplification process into a function
+            List<Map<String, Object>> simplifiedResponse = new ArrayList<>();
+            List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
 
-            List<Map<String, Object>> images = (List<Map<String, Object>>) item.get("images");
-            String artistImageUrl = (String) images.get(0).get("url");
-            artistInfo.put("artistImageUrl", artistImageUrl);
+            for(Map<String, Object> item: items) {
+                Map<String, Object> artistInfo = new HashMap<>();
 
-            List<String> artistGenres = (List<String>) item.get("genres");
-            artistInfo.put("genres", artistGenres.stream().limit(2).collect(Collectors.toList()));
+                String artistName = (String) item.get("name");
+                artistInfo.put("name", artistName);
+                System.out.println("🎤 " + artistName);
 
-            simplifiedResponse.add(artistInfo);
+                List<Map<String, Object>> images = (List<Map<String, Object>>) item.get("images");
+                String artistImageUrl = (String) images.get(0).get("url");
+                artistInfo.put("artistImageUrl", artistImageUrl);
+
+                List<String> artistGenres = (List<String>) item.get("genres");
+                artistInfo.put("genres", artistGenres.stream().limit(2).collect(Collectors.toList()));
+
+                simplifiedResponse.add(artistInfo);
+            }
+
+            // [{"artistImageUrl": "https://inserturlhere.com", "name": "Drake"}]
+            return ResponseEntity.ok(simplifiedResponse);
         }
 
-        // [{"artistImageUrl": "https://inserturlhere.com", "name": "Drake"}]
-        return ResponseEntity.ok(simplifiedResponse);
+        catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Internal server error"));
+        }
     }
 
     @GetMapping("/top-genres")
@@ -210,80 +238,110 @@ public class Controller {
             @RequestParam(name = "timeRange", defaultValue = "long_term") String timeRange,
             @RequestParam(name = "amount", defaultValue = "10") String amount
     ) {
-        String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=50&time_range=" + timeRange;
+        try {
+            String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=50&time_range=" + timeRange;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", accessToken);
-
-        HttpEntity<String> request = new HttpEntity<>(headers);
-
-        ResponseEntity<Map> response = restTemplate.exchange(
-                topArtistsEndpoint,
-                HttpMethod.GET,
-                request,
-                Map.class
-        );
-
-        List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
-        Map<String, Integer> genreFrequency = new HashMap<>();
-        Map<String, List<String>> genreArtistImageMap = new HashMap<>();
-
-        for(Map<String, Object> item: items) {
-            ArrayList<String> genres = (ArrayList<String>) item.get("genres");
-            List<Map<String, Object>> artistImages = (List<Map<String, Object>>)item.get("images");
-            String artistImageUrl = (String) artistImages.get(0).get("url");
-
-
-            for(String genre: genres) {
-                genreFrequency.put(genre, genreFrequency.getOrDefault(genre, 0) + 1);
-                genreArtistImageMap.putIfAbsent(genre, new ArrayList<>());
-                genreArtistImageMap.get(genre).add(artistImageUrl);
+            if(accessToken == null || !accessToken.startsWith(("Bearer "))) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid access token"));
             }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", accessToken);
+
+            HttpEntity<String> request = new HttpEntity<>(headers);
+
+            ResponseEntity<Map> response = restTemplate.exchange(
+                    topArtistsEndpoint,
+                    HttpMethod.GET,
+                    request,
+                    Map.class
+            );
+
+            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(Map.of("error", "Failed to fetch top genres from Spotify"));
+            }
+
+            List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
+            Map<String, Integer> genreFrequency = new HashMap<>();
+            Map<String, List<String>> genreArtistImageMap = new HashMap<>();
+
+            for(Map<String, Object> item: items) {
+                ArrayList<String> genres = (ArrayList<String>) item.get("genres");
+                List<Map<String, Object>> artistImages = (List<Map<String, Object>>)item.get("images");
+                String artistImageUrl = (String) artistImages.get(0).get("url");
+
+
+                for(String genre: genres) {
+                    genreFrequency.put(genre, genreFrequency.getOrDefault(genre, 0) + 1);
+                    genreArtistImageMap.putIfAbsent(genre, new ArrayList<>());
+                    genreArtistImageMap.get(genre).add(artistImageUrl);
+                }
+            }
+
+            int limitAmount = Integer.parseInt(amount);
+            // sorting in descending order
+            List<Map<String, Object>> sortedGenres = genreFrequency.entrySet().stream()
+                    .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
+                    .limit(limitAmount)
+                    .map(entry -> {
+                        Map<String, Object> genreData = new HashMap<>();
+                        genreData.put("genre", entry.getKey());
+                        genreData.put("count", entry.getValue());
+
+                        List<String> artistImagesForGenre = genreArtistImageMap.getOrDefault(entry.getKey(), Collections.emptyList());
+                        genreData.put("genreArtistImageUrls",
+                                artistImagesForGenre.stream()
+                                        .limit(9)
+                                        .collect(Collectors.toList()));
+
+                        return genreData;
+                    })
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(sortedGenres);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Internal server error"));
         }
 
-        int limitAmount = Integer.parseInt(amount);
-        // sorting in descending order
-        List<Map<String, Object>> sortedGenres = genreFrequency.entrySet().stream()
-                .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
-                .limit(limitAmount)
-                .map(entry -> {
-                    Map<String, Object> genreData = new HashMap<>();
-                    genreData.put("genre", entry.getKey());
-                    genreData.put("count", entry.getValue());
-
-                    List<String> artistImagesForGenre = genreArtistImageMap.getOrDefault(entry.getKey(), Collections.emptyList());
-                    genreData.put("genreArtistImageUrls",
-                        artistImagesForGenre.stream()
-                                .limit(9)
-                                .collect(Collectors.toList()));
-
-                    return genreData;
-                })
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(sortedGenres);
     }
 
     @GetMapping("/user")
     public ResponseEntity<?> getUserName(@RequestHeader("Authorization") String accessToken) {
-        System.out.println("in /user");
-        String userProfileEndpoint = "https://api.spotify.com/v1/me";
+        try {
+            System.out.println("in /user");
+            String userProfileEndpoint = "https://api.spotify.com/v1/me";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", accessToken);
+            if(accessToken == null || !accessToken.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid access token"));
+            }
 
-        HttpEntity<String> request = new HttpEntity<>(headers);
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", accessToken);
 
-        ResponseEntity<Map> response = restTemplate.exchange(
-                userProfileEndpoint,
-                HttpMethod.GET,
-                request,
-                Map.class
-        );
+            HttpEntity<String> request = new HttpEntity<>(headers);
 
-        String userFullName = (String) response.getBody().get("display_name");
-        String userFirstName = userFullName.split(" ")[0];
+            ResponseEntity<Map> response = restTemplate.exchange(
+                    userProfileEndpoint,
+                    HttpMethod.GET,
+                    request,
+                    Map.class
+            );
 
-        return ResponseEntity.ok(Collections.singletonMap("userFirstName", userFirstName));
+            if(!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(Map.of("error", "Failed to fetch user profile from Spotify"));
+            }
+
+            String userFullName = (String) response.getBody().get("display_name");
+            String userFirstName = userFullName.split(" ")[0];
+
+            return ResponseEntity.ok(Collections.singletonMap("userFirstName", userFirstName));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Internal server error"));
+        }
+
     }
 }
