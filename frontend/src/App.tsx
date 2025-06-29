@@ -44,7 +44,7 @@ function App() {
             setToken(data.access_token);
             localStorage.setItem("accessToken", data.access_token);
             localStorage.setItem("refreshToken", data.refresh_token);
-            localStorage.setItem("tokenExpiry", Date.now() + (3600 * 1000));
+            localStorage.setItem("tokenExpiry", (Date.now() + (3600 * 1000)).toString());
             window.history.replaceState({}, document.title, "/");
             // fetchTopData()
           });
@@ -122,7 +122,7 @@ function App() {
     const tokenExpiry = localStorage.getItem("tokenExpiry");
 
     if(!accessToken || ! refreshToken || !tokenExpiry) {
-       console.log("No token/refresh/expiry found; not fetching.");
+      console.log("No token/refresh/expiry found; not fetching.");
       return null;
     }
     
