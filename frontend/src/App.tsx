@@ -316,7 +316,8 @@ function App() {
                 </div>
               </div>
             ) : (
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 font-fancy animate-fade-in px-2 sm:px-4">
+            
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4  gap-y-tall gap-y-taller mt-6 font-fancy animate-fade-in px-2 sm:px-4">
                 {data.map((item, index) => (
                   <li
                     key={index}
@@ -356,6 +357,7 @@ function App() {
                   </li>
                 ))}
               </ul>
+         
             )}
           </div>
       </div>
