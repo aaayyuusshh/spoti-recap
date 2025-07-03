@@ -3,6 +3,8 @@ import html2canvas from 'html2canvas-pro';
 import { DownloadGoatCard } from "./DownloadGoatCard";
 import { DownloadTop10Card } from "./DownloadTop10Card";
 import { LandingPage } from "./LandingPage";
+import { ScaledCardWrapper } from "./ScaledCardWrapper";
+
 
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
@@ -194,7 +196,7 @@ function App() {
               >
                 Download
               </button>            
-              <button onClick={logout} className="text-sm text-red-500 hover:text-red-700 underline">
+              <button onClick={logout} className="text-sm text-red-500 hover:text-red-700 underline cursor-pointer">
                 Logout
               </button>
             </div>
@@ -252,69 +254,17 @@ function App() {
             )}
 
             {amount === "1" ? (
-              <div className="flex justify-center w-full px-2 sm:px-4 mt-6">
-                <div className="relative w-full max-w-xl sm:max-w-xl md:max-w-2xl h-auto p-6 sm:p-8 md:p-10 bg-gradient-to-br from-yellow-200 via-yellow-50 to-white border-4 border-yellow-400 rounded-3xl shadow-2xl flex flex-col items-center text-center gap-6 animate-fade-in">
-
-                  {/*  <div className="absolute top-4 right-6 text-black/30 text-xl animate-bounce">🎶</div> */}
-
-                  <div className="text-5xl sm:text-5xl md:text-7xl lg:text-7xl opacity-80">👑</div>
-
-                  {selectedType === "tracks" && data[0]?.albumCoverUrl && (
-                    <div className="relative">
-                      <div className="absolute inset-0 rounded-full blur-2xl bg-yellow-400 opacity-40 scale-110" />
-                      <img
-                        src={data[0].albumCoverUrl}
-                        alt={data[0].name}
-                        className="relative z-10 w-60 h-60 sm:w-64 sm:h-64 md:w-80 md:h-80 max-w-[85vw] rounded-2xl object-cover shadow-xl border-4 border-white"
-                      />
-                    </div>
-                  )}
-
-                  {selectedType === "artists" && data[0]?.artistImageUrl && (
-                    <div className="relative">
-                      <div className="absolute inset-0 rounded-full blur-2xl bg-yellow-400 opacity-40 scale-110" />
-                      <img
-                        src={data[0].artistImageUrl}
-                        alt={data[0].name}
-                        className="relative z-10 w-56 h-56 sm:w-64 sm:h-64 md:w-80 md:h-80 max-w-[85vw] rounded-full object-cover shadow-xl border-4 border-white"
-                      />
-                    </div>
-                  )}
-
-                  {selectedType === "genres" && data[0]?.genreArtistImageUrls && data[0].genreArtistImageUrls.length > 0 && (
-                    <div className="grid grid-cols-3 gap-2 mt-4 w-full max-w-xs mx-auto">
-                      {data[0].genreArtistImageUrls.slice(0, 9).map((imgUrl, idx) => (
-                        <img
-                          key={idx}
-                          src={imgUrl}
-                          alt={`Top artist ${idx + 1}`}
-                          className="w-full aspect-square object-cover rounded-md shadow-sm border border-white"
-                        />
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="space-y-4">
-                    <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
-                      {selectedType === "genres" ? data[0]?.genre : data[0]?.name}
-                    </h2>
-                    {selectedType === "tracks" && (
-                      <p className="text-lg text-gray-600">by {data[0]?.artists}</p>
-                    )}
-                    {selectedType === "artists" && (
-                      <p className="text-lg text-gray-600">🎶</p>
-                    )}
-                    {selectedType === "genres" && (
-                      <p className="text-md text-gray-600">{data[0]?.count} of your top 50 artists</p>
-                    )}
-                    <p className="mt-14 text-xs text-gray-500 italic">
-                      {selectedType === "tracks" && `${userFirstName}'s most listened to track ${getTimeRangeLabel(timeRange)}`}
-                      {selectedType === "artists" && `${userFirstName}'s GOAT artist ${getTimeRangeLabel(timeRange)}`}
-                      {selectedType === "genres" && `${userFirstName}'s most loved genre ${getTimeRangeLabel(timeRange)}`}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <div className="flex justify-center items-center w-full min-h-[60vh]">
+              <ScaledCardWrapper>
+                <DownloadGoatCard
+                  data={data}
+                  selectedType={selectedType}
+                  userFirstName={userFirstName}
+                  timeRange={timeRange}
+                  displayMode={true}
+                />
+              </ScaledCardWrapper>
+            </div>
             ) : (
             
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4  gap-y-tall gap-y-taller mt-6 font-fancy animate-fade-in px-2 sm:px-4">
