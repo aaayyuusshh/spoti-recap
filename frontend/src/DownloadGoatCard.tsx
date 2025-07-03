@@ -5,6 +5,7 @@ export function DownloadGoatCard({
   selectedType,
   userFirstName,
   timeRange,
+  displayMode = false
 }) {
   
   function getTimeRangeLabel(timeRange) {
@@ -28,6 +29,9 @@ export function DownloadGoatCard({
         boxSizing: "border-box",
         paddingTop: 220,
         position: "relative",
+        border: displayMode? "1px solid gray" : undefined,
+        borderRadius: displayMode ? 20 : 0,
+        boxShadow: displayMode ? "0 0 28px 0 rgba(0, 0, 0, 0.33)" : undefined 
       }}
     >
       <div style={{ fontSize: 160, marginBottom: 60, opacity: 0.9, lineHeight: 1 }}>👑</div>
