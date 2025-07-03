@@ -243,16 +243,6 @@ function App() {
               <div className="h-px bg-gray-300 my-6 w-full max-w-sm" />
             </div>
 
-            {amount === "10" && (
-              <h2 className="text-2xl font-bold text-gray-700 text-center">
-                {selectedType === "tracks"
-                  ? `${userFirstName}'s Top Tracks 💿`
-                  : selectedType === "artists"
-                    ? `${userFirstName}'s Top Artists 🧑‍🎤`
-                    : `${userFirstName}'s Top Genres 🎼`}
-              </h2>
-            )}
-
             {amount === "1" ? (
               <div className="flex justify-center items-center w-full min-h-[60vh]">
               <ScaledCardWrapper>
@@ -267,47 +257,15 @@ function App() {
             </div>
             ) : (
             
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4  gap-y-tall gap-y-taller mt-6 font-fancy animate-fade-in px-2 sm:px-4">
-                {data.map((item, index) => (
-                  <li
-                    key={index}
-                    className="bg-white border border-gray-200 rounded-2xl p-2 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center gap-4"
-                  >
-                    {selectedType === "tracks" && item.albumCoverUrl && (
-                      <img
-                        src={item.albumCoverUrl}
-                        alt={item.name}
-                        className="w-18 h-18 rounded-xl object-cover shadow-sm"
-                      />
-                    )}
-                    {selectedType === "artists" && item.artistImageUrl && (
-                      <img
-                        src={item.artistImageUrl}
-                        alt={item.name}
-                        className="w-18 h-18 rounded-full object-cover shadow-sm"
-                      />
-                    )}
-                    <div className="flex flex-col justify-center">
-                      <div className="text-lg font-semibold text-gray-800">
-                        {selectedType === "tracks"
-                          ? item.name
-                          : selectedType === "artists"
-                            ? item.name
-                            : item.genre}
-                      </div>
-                      {selectedType === "tracks" && (
-                        <div className="text-sm text-gray-500 mt-1">by {item.artists}</div>
-                      )}
-                      {selectedType === "genres" && (
-                        <div className="text-sm text-gray-500 mt-1">
-                          {item.count} of your top 50 artists
-                        </div>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-         
+             <ScaledCardWrapper>
+              <DownloadTop10Card
+                data={data}
+                selectedType={selectedType}
+                userFirstName={userFirstName}
+                timeRange={timeRange}
+                displayMode={true}
+              />
+            </ScaledCardWrapper>
             )}
           </div>
       </div>

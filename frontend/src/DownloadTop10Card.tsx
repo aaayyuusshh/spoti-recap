@@ -5,11 +5,13 @@ export function DownloadTop10Card({
   selectedType,
   userFirstName,
   timeRange,
+  displayMode = false
 }: {
   data: any[];
   selectedType: "tracks" | "artists" | "genres";
   userFirstName: string | null;
   timeRange: "short_term" | "medium_term" | "long_term";
+  displayMode: boolean
 }) {
   
   function getTimeRangeLabel(timeRange: string) {
@@ -44,6 +46,10 @@ export function DownloadTop10Card({
         alignItems: "center",
         fontFamily: "'Inter', system-ui, sans-serif",
         boxSizing: "border-box",
+        border: displayMode? "1px solid gray" : undefined,
+        borderRadius: displayMode ? 20 : 0,
+        boxShadow: displayMode ? "0 0 28px 0 rgba(0, 0, 0, 0.33)" : undefined 
+      
       }}
     >
       {/* Title */}
