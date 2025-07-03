@@ -5,7 +5,6 @@ import { DownloadTop10Card } from "./DownloadTop10Card";
 import { LandingPage } from "./LandingPage";
 import { ScaledCardWrapper } from "./ScaledCardWrapper";
 
-
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
 const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
@@ -188,89 +187,104 @@ function App() {
     :
     (
       <div className="p-4 sm:p-6 md:p-8 min-h-screen">
-          <div>
-            <div className="flex justify-end w-full">
-              <button
-                className="fixed bottom-8 right-8 z-40 bg-green-600 text-white px-6 py-3 rounded-xl shadow-xl cursor-pointer"
-                onClick={handleDownload}
-              >
-                Download
-              </button>            
-              <button onClick={logout} className="text-sm text-red-500 hover:text-red-700 underline cursor-pointer">
-                Logout
-              </button>
-            </div>
+        
+        <div className="bg-gray-100 flex justify-between items-center w-full py-2 px-4 mb-4">
+          {/* <p className="text-sm text-blue-500 underline" ><a href="">Privacy Notice</a></p> */}
+           <span className="text-xl font-bold text-700">YourSpotify</span>
+          <button
+            onClick={logout}
+            className="text-sm text-red-500 hover:text-red-700 underline px-4 py-2 rounded-md transition cursor-pointer"
+          >
+            Logout
+          </button>
+        </div>
 
-            <div className="flex flex-col items-center text-center">
-              <h3 className="text-xl font-semibold text-gray-700">Customize Your View</h3>
-              <div className="flex flex-col sm:flex-row flex-wrap items-center gap-4 sm:gap-6 mt-4 w-full max-w-md">
+        
+        <div className="flex flex-1 flex-col items-center justify-center w-full">
+          {/* row on big screens, column on mobile */}
+          <div className="flex flex-col lg:flex-row  justify-center w-full gap-10 mt-6">
+            {/* dropdown section */}
+            <div className="w-full max-w-xs flex-shrink-0 flex flex-col items-center">
+              <h3 className="text-2xl font-semibold text-gray-700 mb-4">Customize Your View</h3>
+              <div className="flex flex-col gap-4 w-full">
+                {/* view dropdown */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">View</label>
                   <select
                     value={selectedType}
                     onChange={(e) => { setData([]); setSelectedType(e.target.value as any); }}
-                    className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm"
+                    className="bg-white border border-black-300 rounded-md px-4 py-2 shadow-sm w-full"
                   >
                     <option value="tracks">Top Tracks</option>
                     <option value="artists">Top Artists</option>
                     <option value="genres">Top Genres</option>
                   </select>
                 </div>
+                {/* time range dropdown */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Time Range</label>
                   <select
                     value={timeRange}
                     onChange={(e) => setTimeRange(e.target.value as any)}
-                    className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm"
+                    className="bg-white border border-black rounded-md px-4 py-2 shadow-sm w-full"
                   >
                     <option value="short_term">1 month</option>
                     <option value="medium_term">6 months</option>
                     <option value="long_term">All time</option>
                   </select>
                 </div>
+                {/* amount dropdown */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
                   <select
                     value={amount}
                     onChange={(e) => setAmount(e.target.value as any)}
-                    className="bg-white border border-gray-300 rounded-md px-4 py-2 shadow-sm"
+                    className="bg-white border border-black rounded-md px-4 py-2 shadow-sm w-full"
                   >
                     <option value="10">Top 10</option>
                     <option value="1">GOAT</option>
                   </select>
                 </div>
               </div>
-              <div className="h-px bg-gray-300 my-6 w-full max-w-sm" />
             </div>
 
-            {amount === "1" ? (
-              <div className="flex justify-center items-center w-full min-h-[60vh]">
-              <ScaledCardWrapper>
-                <DownloadGoatCard
-                  data={data}
-                  selectedType={selectedType}
-                  userFirstName={userFirstName}
-                  timeRange={timeRange}
-                  displayMode={true}
-                />
-              </ScaledCardWrapper>
+            {/* display */}
+            <div className="flex flex-col items-center justify-center w-full max-w-2xl">
+              {amount === "1" ? (
+                <ScaledCardWrapper>
+                  <DownloadGoatCard
+                    data={data}
+                    selectedType={selectedType}
+                    userFirstName={userFirstName}
+                    timeRange={timeRange}
+                    displayMode={true}
+                  />
+                </ScaledCardWrapper>
+              ) : (
+                <ScaledCardWrapper>
+                  <DownloadTop10Card
+                    data={data}
+                    selectedType={selectedType}
+                    userFirstName={userFirstName}
+                    timeRange={timeRange}
+                    displayMode={true}
+                  />
+                </ScaledCardWrapper>
+              )}
+              <button
+                className="mt-5 bg-green-600 text-white px-6 py-2 rounded-xl shadow-xl cursor-pointer text-lg font-semibold transition hover:bg-green-700"
+                onClick={handleDownload}
+              >
+                Download
+              </button>
             </div>
-            ) : (
-            
-             <ScaledCardWrapper>
-              <DownloadTop10Card
-                data={data}
-                selectedType={selectedType}
-                userFirstName={userFirstName}
-                timeRange={timeRange}
-                displayMode={true}
-              />
-            </ScaledCardWrapper>
-            )}
           </div>
+        </div>
+
       </div>
     )}
 
+    {/* download version of display */}
     {showDownloadCard && (
       <div
         style={{
