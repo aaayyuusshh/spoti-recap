@@ -1,5 +1,7 @@
 package com.spotifyproject.yourspotify.service;
 
+import com.spotifyproject.yourspotify.exception.SpotifyApiException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,10 @@ public class SpotifyService {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(form, headers);
         ResponseEntity<Map> response = restTemplate.postForEntity(tokenEndpoint, request, Map.class);
 
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            throw new SpotifyApiException("Failed to fetch access token from Spotify");
+        }
+
         Map<String, String> tokenResults = new HashMap<>();
         tokenResults.put("access_token", (String) response.getBody().get("access_token"));
         tokenResults.put("refresh_token", (String) response.getBody().get("refresh_token"));
@@ -61,6 +67,10 @@ public class SpotifyService {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(requestBody, headers);
         ResponseEntity<Map> response = restTemplate.postForEntity(tokenEndpoint, request, Map.class);
 
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            throw new SpotifyApiException("Failed to fetch refresh token from Spotify");
+        }
+
         return response.getBody();
     }
 
@@ -81,6 +91,10 @@ public class SpotifyService {
                 request,
                 Map.class
         );
+
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            throw new SpotifyApiException("Failed to fetch top tracks from Spotify");
+        }
 
         // simplifying the raw response bc it is BULKY
         // @TODO extract this simplification process into a function
@@ -126,6 +140,10 @@ public class SpotifyService {
                 Map.class
         );
 
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            throw new SpotifyApiException("Failed to fetch top artists from Spotify");
+        }
+
         // simplifying raw response
         // @TODO extract this simplification process into a function
         List<Map<String, Object>> simplifiedResponse = new ArrayList<>();
@@ -166,6 +184,10 @@ public class SpotifyService {
                 request,
                 Map.class
         );
+
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            throw new SpotifyApiException("Failed to fetch top genres from Spotify");
+        }
 
         List<Map<String, Object>> items = (List<Map<String, Object>>) response.getBody().get("items");
         Map<String, Integer> genreFrequency = new HashMap<>();
@@ -221,6 +243,10 @@ public class SpotifyService {
                 request,
                 Map.class
         );
+
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            throw new SpotifyApiException("Failed to fetch user profile from Spotify");
+        }
 
         String userFullName = (String) response.getBody().get("display_name");
         String userFirstName = userFullName.split(" ")[0];
