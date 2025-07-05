@@ -202,7 +202,7 @@ function App() {
         
         <div className="flex flex-1 flex-col items-center justify-center w-full">
           {/* row on big screens, column on mobile */}
-          <div className="flex flex-col lg:flex-row  justify-center w-full gap-10 mt-6">
+          <div className="flex flex-col lg:flex-row lg:items-start items-center justify-center w-full gap-10 mt-6">
             {/* dropdown section */}
             <div className="w-full max-w-xs flex-shrink-0 flex flex-col items-center">
               <h3 className="text-2xl font-semibold text-gray-700 mb-4">Customize Your View</h3>
