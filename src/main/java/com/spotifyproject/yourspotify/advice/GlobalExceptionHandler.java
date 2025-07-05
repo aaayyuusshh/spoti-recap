@@ -1,5 +1,7 @@
 package com.spotifyproject.yourspotify.advice;
 
+import com.spotifyproject.yourspotify.exception.SpotifyApiException;
+
 import org.springframework.http.*;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(status)
                 .body(Map.of("error", errorMsg));
+    }
+
+    @ExceptionHandler(SpotifyApiException.class)
+    public ResponseEntity<?> handleSpotifyApiException(SpotifyApiException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(Map.of("error", ex.getMessage()));
     }
 
     // triggered for uncaught exceptions
