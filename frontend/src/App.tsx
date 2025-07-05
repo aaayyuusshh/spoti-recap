@@ -186,19 +186,17 @@ function App() {
     ) 
     :
     (
-      <div className="p-4 sm:p-6 md:p-8 min-h-screen">
-        
-        <div className="bg-gray-100 flex justify-between items-center w-full py-2 px-4 mb-4">
+      <div className="p-4 min-h-screen">
+        <div className="flex justify-between items-center w-full py-2 px-4 mb-4">
           {/* <p className="text-sm text-blue-500 underline" ><a href="">Privacy Notice</a></p> */}
-           <span className="text-xl font-bold text-700">YourSpotify</span>
+           <span className="underline text-xl font-bold text-700">YourSpotify</span>
           <button
             onClick={logout}
-            className="text-sm text-red-500 hover:text-red-700 underline px-4 py-2 rounded-md transition cursor-pointer"
+            className="bg-red-500 hover:bg-red-600 text-sm text-white px-4 py-2 rounded-md transition cursor-pointer"
           >
             Logout
           </button>
         </div>
-
         
         <div className="flex flex-1 flex-col items-center justify-center w-full">
           {/* row on big screens, column on mobile */}
