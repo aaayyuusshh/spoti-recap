@@ -11,7 +11,7 @@ const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
 const RESPONSE_TYPE = "code";
 const SCOPE = "user-top-read";
 
-function App() {
+export function App() {
   const [token, setToken] = useState<string | null>(null);
   const [data, setData] = useState<any[]>([]);
   const [selectedType, setSelectedType] = useState<"tracks" | "artists" | "genres">("tracks");
@@ -35,31 +35,38 @@ function App() {
       if (code) {
         fetchedRef.current = true; // ensure this useEffect only runs once
         console.log("no saved token");
-        fetch("http://localhost:8080/api/auth/token", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code }),
-        })
-          .then(res => res.json())
+        fetchWithErrorHandling(
+          "http://localhost:8080/api/auth/token", 
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code }),
+          })
           .then((data) => {
             setToken(data.access_token);
             localStorage.setItem("accessToken", data.access_token);
             localStorage.setItem("refreshToken", data.refresh_token);
-            localStorage.setItem("tokenExpiry", (Date.now() + (3600 * 1000)).toString());
+            localStorage.setItem("tokenExpiry", (Date.now() + (5 * 1000)).toString());
             window.history.replaceState({}, document.title, "/");
             // fetchTopData()
-          });
+          })
+          .catch(err => {
+            console.error(`Failed to fetch access token:`, err.message);
+          })
       }
     }
   }, []);
 
   useEffect(() => {
     if(token) {
-      fetch("http://localhost:8080/api/user", {
-        headers: { Authorization: `Bearer ${token}`}
+      fetchWithErrorHandling(
+        "http://localhost:8080/api/user", 
+        { headers: { Authorization: `Bearer ${token}` }
       })
-        .then(res => res.json())
-        .then(data => setUserFirstName(data.userFirstName));
+        .then(data => setUserFirstName(data.userFirstName))
+        .catch (err  => {
+          console.error(`Failed to fetch user:`, err.message);
+        })
     }
   },[token]);
 
@@ -90,6 +97,23 @@ function App() {
     setUserFirstName(null);
   }
 
+  async function fetchWithErrorHandling(url: string, options: object = {}) {
+    const res = await fetch(url, options);
+    let data;
+    try {
+      data = await res.json();
+    } 
+    catch (e) {
+      data = null;
+    }
+
+    if(!res.ok) {
+      throw new Error(`[${res.status}] ${data?.error}` || `Request failed with status ${res.status}`);
+    }
+
+    return data;
+  }
+
   async function fetchTopData() {
     console.log('in fetchTopData');
     console.log(`token: ${token}`);
@@ -108,11 +132,17 @@ function App() {
         : selectedType == "artists" ?  "top-artists"
         : "top-genres";
 
-      fetch(`http://localhost:8080/api/${endpoint}?timeRange=${timeRange}&amount=${amount}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then(res => res.json())
-        .then(data => setData(data));
+      try {
+        const data = await fetchWithErrorHandling(
+          `http://localhost:8080/api/${endpoint}?timeRange=${timeRange}&amount=${amount}`, 
+          { headers: { Authorization: `Bearer ${token}` } },
+         
+        );
+        setData(data);
+      } 
+      catch(err: any) {
+        console.error("Failed to fetch top data:", err.message);
+      }
     }
   }
 
@@ -134,16 +164,19 @@ function App() {
 
     if(Date.now() >= Number(tokenExpiry)) {
       console.log("access token refreshed...");
-      const res = await fetch("http://localhost:8080/api/auth/refresh", {
-          method: "POST",
-          headers: { "Content-Type": "application/json"},
-          body: JSON.stringify({refresh_token: refreshToken})
-        });
-
-        const data = await res.json();
-        if(data.access_token) {
+      try {
+        const data = await fetchWithErrorHandling(
+          "http://localhost:8080/api/auth/refresh", 
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify({refresh_token: refreshToken})
+          }
+        );
+     
+      if(data.access_token) {
           localStorage.setItem("accessToken", data.access_token);
-          localStorage.setItem("tokenExpiry", (Date.now() + (3600 * 1000)).toString());
+          localStorage.setItem("tokenExpiry", (Date.now() + (5 * 1000)).toString());
           setToken(data.access_token);
           return data.access_token;
         } 
@@ -151,6 +184,10 @@ function App() {
           console.log("Failed to refresh token.");
           return null;
         }
+      }
+      catch (err: any) {
+        console.error("Failed to refresh:", err.message);
+      }
     }
 
     return accessToken;
@@ -319,4 +356,6 @@ function App() {
   );
 }
 
+
 export default App;
+
