@@ -18,6 +18,7 @@ export function App() {
   const [timeRange, setTimeRange] = useState<"short_term" | "medium_term" | "long_term">("long_term");
   const [userFirstName, setUserFirstName] = useState<string | null>(null);
   const [amount, setAmount] = useState<"10" | "1">("10");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchedRef = useRef(false);
   useEffect(() => {
@@ -33,6 +34,7 @@ export function App() {
 
       const code = new URLSearchParams(window.location.search).get('code');
       if (code) {
+        setLoading(true);
         fetchedRef.current = true; // ensure this useEffect only runs once
         console.log("no saved token");
         fetchWithErrorHandling(
@@ -44,20 +46,25 @@ export function App() {
           })
           .then((data) => {
             setToken(data.access_token);
+            console.log("token set");
             localStorage.setItem("accessToken", data.access_token);
             localStorage.setItem("refreshToken", data.refresh_token);
-            localStorage.setItem("tokenExpiry", (Date.now() + (5 * 1000)).toString());
+            localStorage.setItem("tokenExpiry", (Date.now() + (3600 * 1000)).toString());
             window.history.replaceState({}, document.title, "/");
             // fetchTopData()
           })
           .catch(err => {
             console.error(`Failed to fetch access token:`, err.message);
           })
+          .finally(() => {
+            setLoading(false)
+          });
       }
     }
   }, []);
 
   useEffect(() => {
+    console.log("in user useEffect");
     if(token) {
       fetchWithErrorHandling(
         "http://localhost:8080/api/user", 
@@ -176,7 +183,7 @@ export function App() {
      
       if(data.access_token) {
           localStorage.setItem("accessToken", data.access_token);
-          localStorage.setItem("tokenExpiry", (Date.now() + (5 * 1000)).toString());
+          localStorage.setItem("tokenExpiry", (Date.now() + (3600 * 1000)).toString());
           setToken(data.access_token);
           return data.access_token;
         } 
@@ -215,6 +222,10 @@ export function App() {
   }
 
   const loginUrl = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}&show_dialog=true`;
+  
+  if (loading) {
+    return <div className="py-12 text-center text-xl">Loading...</div>;
+  }
 
   return (
   <>
