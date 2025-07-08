@@ -67,7 +67,7 @@ export function DownloadTop10Card({
           marginBottom: 12,
         }}
       >
-        {title}
+        {userFirstName && title}
       </div>
 
       <div

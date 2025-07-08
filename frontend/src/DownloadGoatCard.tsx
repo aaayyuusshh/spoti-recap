@@ -135,9 +135,9 @@ export function DownloadGoatCard({
         marginBottom: 36,
         lineHeight: 1.13,
       }}>
-        {selectedType === "tracks" && `${userFirstName}'s most listened to track ${getTimeRangeLabel(timeRange)}`}
-        {selectedType === "artists" && `${userFirstName}'s GOAT artist ${getTimeRangeLabel(timeRange)}`}
-        {selectedType === "genres" && `${userFirstName}'s most loved genre ${getTimeRangeLabel(timeRange)}`}
+        {selectedType === "tracks" && userFirstName && `${userFirstName}'s most listened to track ${getTimeRangeLabel(timeRange)}`}
+        {selectedType === "artists" &&  userFirstName && `${userFirstName}'s GOAT artist ${getTimeRangeLabel(timeRange)}`}
+        {selectedType === "genres"  && userFirstName && `${userFirstName}'s most loved genre ${getTimeRangeLabel(timeRange)}`}
       </div>
     </div>
   );
