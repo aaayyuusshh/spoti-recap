@@ -3,6 +3,7 @@ package com.spotifyproject.yourspotify.service;
 import com.spotifyproject.yourspotify.exception.SpotifyApiException;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -74,10 +75,12 @@ public class SpotifyService {
         return response.getBody();
     }
 
+    @Cacheable(
+            value = "topTracks",
+            key = "#accessToken + '_' + #timeRange + '_' + #amount"
+    )
     public List<Map<String, String>> getTopTracks(String accessToken, String timeRange, String amount) {
-        System.out.println("--------------------------------------");
-        System.out.println("in get top tracks: " + accessToken);
-
+        System.out.println("❌ cache miss /top-tracks");
         String topTracksEndpoint = "https://api.spotify.com/v1/me/top/tracks?limit=" + amount + "&time_range=" + timeRange;
 
         HttpHeaders headers = new HttpHeaders();
@@ -125,7 +128,12 @@ public class SpotifyService {
         return simplifiedResponse;
     }
 
+    @Cacheable(
+            value = "topArtists",
+            key = "#accessToken + '_' + #timeRange + '_' + #amount"
+    )
     public List<Map<String, Object>> getTopArtists(String accessToken, String timeRange, String amount) {
+        System.out.println("❌ cache miss /top-artists");
         String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=" + amount + "&time_range=" + timeRange;
 
         HttpHeaders headers = new HttpHeaders();
@@ -170,7 +178,12 @@ public class SpotifyService {
         return simplifiedResponse;
     }
 
+    @Cacheable(
+            value = "topGenres",
+            key = "#accessToken + '_' + #timeRange + '_' + #amount"
+    )
     public List<Map<String, Object>> getTopGenres(String accessToken, String timeRange, String amount) {
+        System.out.println("❌ cache miss /top-genres");
         String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=50&time_range=" + timeRange;
 
         HttpHeaders headers = new HttpHeaders();
