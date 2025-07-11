@@ -1,0 +1,16 @@
+# SAMPLE CONFIG FILE for YourSpotify backend
+# Copy this file to resources/application.properties and fill in your own credentials
+
+spring.application.name=yourspotify
+
+server.port=8080
+
+# Spotify API credentials (get these from your Spotify Developer Dashboard)
+spotify.client-id=YOUR_SPOTIFY_CLIENT_ID
+spotify.client-secret=YOUR_SPOTIFY_CLIENT_SECRET
+spotify.redirect-uri=http://localhost:3000/callback
+
+# Redis cache config (change if using cloud Redis instance)
+spring.cache.type=redis
+spring.redis.host=localhost
+spring.redis.port=6379
