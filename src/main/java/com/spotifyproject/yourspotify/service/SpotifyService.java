@@ -80,7 +80,7 @@ public class SpotifyService {
             key = "#accessToken + '_' + #timeRange + '_' + #amount"
     )
     public List<Map<String, String>> getTopTracks(String accessToken, String timeRange, String amount) {
-        System.out.println("❌ cache miss /top-tracks");
+        System.out.println("❌ cache miss /top-tracks " + "time range: " + timeRange + " amount: " + amount );
         String topTracksEndpoint = "https://api.spotify.com/v1/me/top/tracks?limit=" + amount + "&time_range=" + timeRange;
 
         HttpHeaders headers = new HttpHeaders();
@@ -112,8 +112,6 @@ public class SpotifyService {
                     .map(a -> (String) a.get("name"))
                     .collect(Collectors.joining(", "));
 
-            System.out.println("🎵 " + trackName + " by " + artistNames);
-
             Map<String, Object> album = (Map<String, Object>) item.get("album");
             List<Map<String, Object>> images = (List<Map<String, Object>>) album.get("images");
             String albumCoverUrl = (String) images.get(0).get("url");
@@ -133,7 +131,7 @@ public class SpotifyService {
             key = "#accessToken + '_' + #timeRange + '_' + #amount"
     )
     public List<Map<String, Object>> getTopArtists(String accessToken, String timeRange, String amount) {
-        System.out.println("❌ cache miss /top-artists");
+        System.out.println("❌ cache miss /top-artists " + "time range: " + timeRange + " amount: " + amount );
         String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=" + amount + "&time_range=" + timeRange;
 
         HttpHeaders headers = new HttpHeaders();
@@ -162,7 +160,6 @@ public class SpotifyService {
 
             String artistName = (String) item.get("name");
             artistInfo.put("name", artistName);
-            System.out.println("🎤 " + artistName);
 
             List<Map<String, Object>> images = (List<Map<String, Object>>) item.get("images");
             String artistImageUrl = (String) images.get(0).get("url");
@@ -183,7 +180,7 @@ public class SpotifyService {
             key = "#accessToken + '_' + #timeRange + '_' + #amount"
     )
     public List<Map<String, Object>> getTopGenres(String accessToken, String timeRange, String amount) {
-        System.out.println("❌ cache miss /top-genres");
+        System.out.println("❌ cache miss /top-genres " + "time range: " + timeRange + " amount: " + amount );
         String topArtistsEndpoint = "https://api.spotify.com/v1/me/top/artists?limit=50&time_range=" + timeRange;
 
         HttpHeaders headers = new HttpHeaders();

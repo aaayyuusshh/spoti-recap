@@ -27,7 +27,7 @@ export function App() {
       const savedToken = localStorage.getItem("accessToken");
       if(savedToken) {
         fetchedRef.current = true;
-        console.log(`using saved token: ${savedToken}`);
+        console.log(`login useEffect: using saved token: ${savedToken}`);
         setToken(savedToken);
         return;
       }
@@ -36,7 +36,7 @@ export function App() {
       if (code) {
         setLoading(true);
         fetchedRef.current = true; // ensure this useEffect only runs once
-        console.log("no saved token");
+        console.log("login useEffect: no saved token");
         fetchWithErrorHandling(
           "http://localhost:8080/api/auth/token", 
           {
@@ -46,10 +46,10 @@ export function App() {
           })
           .then((data) => {
             setToken(data.access_token);
-            console.log("token set");
+            console.log("login useEffect: token set");
             localStorage.setItem("accessToken", data.access_token);
             localStorage.setItem("refreshToken", data.refresh_token);
-            localStorage.setItem("tokenExpiry", (Date.now() + (3600 * 1000)).toString());
+            localStorage.setItem("tokenExpiry", (Date.now() + (5 * 1000)).toString());
             window.history.replaceState({}, document.title, "/");
             // fetchTopData()
           })
@@ -78,9 +78,8 @@ export function App() {
   },[token]);
 
   useEffect(() => {
-    console.log("fetch use effect running");
+    console.log("in fetch useEffect");
     fetchTopData();
-    console.log("x");
   }, [token, selectedType, timeRange, amount]);
 
 
@@ -122,18 +121,18 @@ export function App() {
   }
 
   async function fetchTopData() {
-    console.log('in fetchTopData');
-    console.log(`token: ${token}`);
+    console.log('in fetchTopData()');
+    console.log(`fetchTopData(): token: ${token}`);
 
     if(!token) {
-      console.log('No token; not fetching.');
+      console.log('fetchTopData(): No token - not fetching.');
       return;
     }
    
     const validToken = await getValidAccessToken();
-    console.log(`validtToken: ${validToken}`);
+
     if (validToken) {
-      console.log("lol got token");
+      console.log("fetchTopData() - got valid token from getValidAccessToken()");
       const endpoint =
         selectedType == "tracks" ? "top-tracks"
         : selectedType == "artists" ?  "top-artists"
@@ -154,23 +153,18 @@ export function App() {
   }
 
   async function getValidAccessToken(): Promise<string | null> {
-    console.log('in getValidAccessToken');
+    console.log('in getValidAccessToken()');
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
     const tokenExpiry = localStorage.getItem("tokenExpiry");
 
     if(!accessToken || ! refreshToken || !tokenExpiry) {
-      console.log("No token/refresh/expiry found; not fetching.");
+      console.log("getValidAccessToken(): No token/refresh/expiry found-not checking token validity.");
       return null;
     }
-    
-    console.log(`refresh token: ${refreshToken}`);
-    console.log(`token expiry: ${tokenExpiry}`);
-    console.log(`access token: ${accessToken}`);
-    console.log(`state access token: ${token}`);
 
     if(Date.now() >= Number(tokenExpiry)) {
-      console.log("access token refreshed...");
+      console.log("getValidAccessToken(): access token refreshed..");
       try {
         const data = await fetchWithErrorHandling(
           "http://localhost:8080/api/auth/refresh", 
@@ -183,7 +177,7 @@ export function App() {
      
       if(data.access_token) {
           localStorage.setItem("accessToken", data.access_token);
-          localStorage.setItem("tokenExpiry", (Date.now() + (3600 * 1000)).toString());
+          localStorage.setItem("tokenExpiry", (Date.now() + (5 * 1000)).toString());
           setToken(data.access_token);
           return data.access_token;
         } 
