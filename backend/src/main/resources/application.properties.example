@@ -1,4 +1,4 @@
-# SAMPLE CONFIG FILE for YourSpotify backend
+ # SAMPLE CONFIG FILE for YourSpotify backend
 # Copy this file to resources/application.properties and fill in your own credentials
 
 spring.application.name=yourspotify

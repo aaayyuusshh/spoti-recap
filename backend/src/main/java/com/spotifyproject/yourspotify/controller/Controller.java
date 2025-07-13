@@ -64,9 +64,6 @@ public class Controller {
             @RequestParam(name = "amount", defaultValue = "10") String amount
     ) {
         try {
-            System.out.println("--------------------------------------");
-            System.out.println("in get top tracks: " + accessToken);
-
             if (accessToken == null || !accessToken.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid access token"));
             }
@@ -126,7 +123,6 @@ public class Controller {
     @GetMapping("/user")
     public ResponseEntity<?> getUserName(@RequestHeader("Authorization") String accessToken) {
         try {
-            System.out.println("in /user");
             if(accessToken == null || !accessToken.startsWith("Bearer ")) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid access token"));
             }
