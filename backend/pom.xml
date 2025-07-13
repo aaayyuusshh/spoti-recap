@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.spotifyproject</groupId>
-	<artifactId>yourspotify</artifactId>
+	<artifactId>spotirecap</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>yourspotify</name>
-	<description>Demo project for Spring Boot</description>
+	<name>spotirecap</name>
+	<description>Backend service for Spotify auth and user stats</description>
 	<url/>
 	<licenses>
 		<license/>

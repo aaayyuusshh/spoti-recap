@@ -1,4 +1,4 @@
-package com.spotifyproject.yourspotify.exception;
+package com.spotifyproject.spotirecap.exception;
 
 public class SpotifyApiException extends RuntimeException {
 

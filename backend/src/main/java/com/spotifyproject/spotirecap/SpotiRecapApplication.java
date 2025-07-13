@@ -1,4 +1,4 @@
-package com.spotifyproject.yourspotify;
+package com.spotifyproject.spotirecap;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,10 +6,10 @@ import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
 @EnableCaching
-public class YourspotifyApplication {
+public class SpotiRecapApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(YourspotifyApplication.class, args);
+		SpringApplication.run(SpotiRecapApplication.class, args);
 	}
 
 }

@@ -1,6 +1,6 @@
-package com.spotifyproject.yourspotify.service;
+package com.spotifyproject.spotirecap.service;
 
-import com.spotifyproject.yourspotify.exception.SpotifyApiException;
+import com.spotifyproject.spotirecap.exception.SpotifyApiException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;

@@ -1,6 +1,6 @@
-package com.spotifyproject.yourspotify.advice;
+package com.spotifyproject.spotirecap.advice;
 
-import com.spotifyproject.yourspotify.exception.SpotifyApiException;
+import com.spotifyproject.spotirecap.exception.SpotifyApiException;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.MissingRequestHeaderException;

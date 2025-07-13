@@ -1,4 +1,4 @@
-package com.spotifyproject.yourspotify;
+package com.spotifyproject.spotirecap;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

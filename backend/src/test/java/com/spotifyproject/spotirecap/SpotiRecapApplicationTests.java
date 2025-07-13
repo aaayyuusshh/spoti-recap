@@ -1,10 +1,10 @@
-package com.spotifyproject.yourspotify;
+package com.spotifyproject.spotirecap;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class YourspotifyApplicationTests {
+class SpotiRecapApplicationTests {
 
 	@Test
 	void contextLoads() {
