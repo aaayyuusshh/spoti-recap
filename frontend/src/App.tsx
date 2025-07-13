@@ -231,7 +231,7 @@ export function App() {
       <div className="p-4 min-h-screen">
         <div className="flex justify-between items-center w-full py-2 px-4 mb-4">
           {/* <p className="text-sm text-blue-500 underline" ><a href="">Privacy Notice</a></p> */}
-           <span className="underline text-xl font-bold text-700">YourSpotify</span>
+           <span className="underline text-xl font-bold text-700">SpotiRecap</span>
           <button
             onClick={logout}
             className="bg-red-500 hover:bg-red-600 text-sm text-white px-4 py-2 rounded-md transition cursor-pointer"

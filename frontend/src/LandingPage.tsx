@@ -10,7 +10,7 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
     <div className="px-4 min-h-screen flex flex-col items-center justify-center">
       <div className="mt-10 mb-4 flex flex-col items-center">
         <h1 className="text-5xl font-black tracking-tight text-gray-800 font-fancy drop-shadow-lg mb-3">
-          YourSpotify
+          SpotiRecap
         </h1>
         <div className="text-lg sm:text-xl text-gray-500 font-medium mb-2 text-center max-w-xl">
           Instantly see, download & share your Spotify top songs, artists, and genres as beautiful social graphics.
