@@ -49,7 +49,7 @@ export function App() {
             console.log("login useEffect: token set");
             localStorage.setItem("accessToken", data.access_token);
             localStorage.setItem("refreshToken", data.refresh_token);
-            localStorage.setItem("tokenExpiry", (Date.now() + (5 * 1000)).toString());
+            localStorage.setItem("tokenExpiry", (Date.now() + (3600 * 1000)).toString());
             window.history.replaceState({}, document.title, "/");
             // fetchTopData()
           })
@@ -177,7 +177,7 @@ export function App() {
      
       if(data.access_token) {
           localStorage.setItem("accessToken", data.access_token);
-          localStorage.setItem("tokenExpiry", (Date.now() + (5 * 1000)).toString());
+          localStorage.setItem("tokenExpiry", (Date.now() + (3600 * 1000)).toString());
           setToken(data.access_token);
           return data.access_token;
         } 
