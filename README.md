@@ -1,5 +1,12 @@
-# your-spotify
-shows you your top artists or tracks of the past month, 6 months, or all time in Spotify 💚
+# SpotiRecap
+Displays your Spotify top tracks, artists, or genres of the past month, 6 months, or all time.
+
+You can view and share your music taste and listening habits anytime now!
 ___
 
-auth flow being used: https://developer.spotify.com/documentation/web-api/tutorials/code-flow
+## How It Works / Architecture
+
+
+## Getting Started
+
+_Built with TypeScript/React(frontend), Java/Spring Boot(backend), Python(automation), and unconditional love for music._
