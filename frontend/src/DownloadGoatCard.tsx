@@ -1,14 +1,20 @@
-import React from "react";
-
 export function DownloadGoatCard({
   data,
   selectedType,
   userFirstName,
   timeRange,
   displayMode = false
-}) {
+}:
+  {
+    data: any[];
+    selectedType: "tracks" | "artists" | "genres";
+    userFirstName: string | null;
+    timeRange: "short_term" | "medium_term" | "long_term";
+    displayMode: boolean
+  }
+){
   
-  function getTimeRangeLabel(timeRange) {
+  function getTimeRangeLabel(timeRange: "short_term" | "medium_term" | "long_term" ) {
     switch (timeRange) {
       case "short_term": return "in the past month";
       case "medium_term": return "in the past 6 months";
@@ -76,7 +82,7 @@ export function DownloadGoatCard({
           gap: 38,
           marginBottom: 46,
         }}>
-          {data[0].genreArtistImageUrls.slice(0, 9).map((url, idx) => (
+          {data[0].genreArtistImageUrls.slice(0, 9).map((url: string, idx: any) => (
             <img
               key={idx}
               src={url}

@@ -1,4 +1,3 @@
-import React from "react";
 
 export function DownloadTop10Card({
   data,
@@ -6,15 +5,17 @@ export function DownloadTop10Card({
   userFirstName,
   timeRange,
   displayMode = false
-}: {
-  data: any[];
-  selectedType: "tracks" | "artists" | "genres";
-  userFirstName: string | null;
-  timeRange: "short_term" | "medium_term" | "long_term";
-  displayMode: boolean
-}) {
+}:
+  {
+    data: any[];
+    selectedType: "tracks" | "artists" | "genres";
+    userFirstName: string | null;
+    timeRange: "short_term" | "medium_term" | "long_term";
+    displayMode: boolean
+  }
+){
   
-  function getTimeRangeLabel(timeRange: string) {
+  function getTimeRangeLabel(timeRange: "short_term" | "medium_term" | "long_term") {
     switch (timeRange) {
       case "short_term": return "in the past month";
       case "medium_term": return "in the past 6 months";

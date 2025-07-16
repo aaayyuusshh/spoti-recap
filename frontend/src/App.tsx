@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import html2canvas from 'html2canvas-pro';
 import { DownloadGoatCard } from "./DownloadGoatCard";
 import { DownloadTop10Card } from "./DownloadTop10Card";
@@ -83,18 +83,6 @@ export function App() {
     console.log("in fetch useEffect");
     fetchTopData();
   }, [token, selectedType, timeRange, amount]);
-
-
-  function getTimeRangeLabel(timeRange: "short_term" | "medium_term" | "long_term"): string {
-    switch(timeRange) {
-      case("short_term"):
-        return "in the past month";
-      case "medium_term":
-        return "in the past 6 months";
-      default:
-        return "of all time"
-    }
-  }
 
   function logout() {
     localStorage.removeItem("accessToken");

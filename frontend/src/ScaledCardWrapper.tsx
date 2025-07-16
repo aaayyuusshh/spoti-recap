@@ -1,8 +1,11 @@
-import React, { useRef, useEffect, useState } from "react";
-import { DownloadGoatCard } from "./DownloadGoatCard";
+import { useRef, useEffect, useState, type ReactNode } from "react";
 
-export function ScaledCardWrapper({ children }) {
-  const containerRef = useRef(null);
+type ScaledCardWrapperProps = {
+  children: ReactNode;
+};
+
+export function ScaledCardWrapper({ children }: ScaledCardWrapperProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
 
   useEffect(() => {

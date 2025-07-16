@@ -1,5 +1,3 @@
-import React from "react";
-
 const SCREENSHOTS = [
   "/assets/example1.png",
   "/assets/example2.png",
