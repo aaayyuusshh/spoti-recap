@@ -7,9 +7,11 @@ import { ScaledCardWrapper } from "./ScaledCardWrapper";
 
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
 const RESPONSE_TYPE = "code";
 const SCOPE = "user-top-read";
+const loginUrl = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}&show_dialog=true`;
 
 export function App() {
   const [token, setToken] = useState<string | null>(null);
@@ -38,7 +40,7 @@ export function App() {
         fetchedRef.current = true; // ensure this useEffect only runs once
         console.log("login useEffect: no saved token");
         fetchWithErrorHandling(
-          "http://localhost:8080/api/auth/token", 
+          `${BACKEND_URL}/api/auth/token`, 
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -67,7 +69,7 @@ export function App() {
     console.log("in user useEffect");
     if(token) {
       fetchWithErrorHandling(
-        "http://localhost:8080/api/user", 
+        `${BACKEND_URL}/api/user`, 
         { headers: { Authorization: `Bearer ${token}` }
       })
         .then(data => setUserFirstName(data.userFirstName))
@@ -140,7 +142,7 @@ export function App() {
 
       try {
         const data = await fetchWithErrorHandling(
-          `http://localhost:8080/api/${endpoint}?timeRange=${timeRange}&amount=${amount}`, 
+          `${BACKEND_URL}/api/${endpoint}?timeRange=${timeRange}&amount=${amount}`, 
           { headers: { Authorization: `Bearer ${token}` } },
          
         );
@@ -167,7 +169,7 @@ export function App() {
       console.log("getValidAccessToken(): access token refreshed..");
       try {
         const data = await fetchWithErrorHandling(
-          "http://localhost:8080/api/auth/refresh", 
+          `${BACKEND_URL}/api/auth/refresh`, 
           {
             method: "POST",
             headers: { "Content-Type": "application/json"},
@@ -214,8 +216,6 @@ export function App() {
       }
     }, 100);
   }
-
-  const loginUrl = `${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&scope=${SCOPE}&show_dialog=true`;
   
   if (loading) {
     return <div className="py-12 text-center text-xl">Loading...</div>;
