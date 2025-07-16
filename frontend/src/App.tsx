@@ -333,6 +333,7 @@ export function App() {
               selectedType={selectedType}
               userFirstName={userFirstName}
               timeRange={timeRange}
+              displayMode={false}
             />
           ) : (
             <DownloadTop10Card
@@ -340,6 +341,7 @@ export function App() {
               selectedType={selectedType}
               userFirstName={userFirstName}
               timeRange={timeRange}
+              displayMode={false}
             />
           )}
         </div>
