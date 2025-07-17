@@ -9,3 +9,6 @@
 .vscode/
 .idea/
 *.iml
+
+# Redis Database snapshot
+dump.rdb
