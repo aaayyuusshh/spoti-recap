@@ -24,12 +24,10 @@ export function App() {
 
   const fetchedRef = useRef(false);
   useEffect(() => {
-    console.log("in login useEffect");
     if(!fetchedRef.current) {
       const savedToken = localStorage.getItem("accessToken");
       if(savedToken) {
         fetchedRef.current = true;
-        console.log(`login useEffect: using saved token: ${savedToken}`);
         setToken(savedToken);
         return;
       }
@@ -38,7 +36,6 @@ export function App() {
       if (code) {
         setLoading(true);
         fetchedRef.current = true; // ensure this useEffect only runs once
-        console.log("login useEffect: no saved token");
         fetchWithErrorHandling(
           `${BACKEND_URL}/api/auth/token`, 
           {
@@ -48,7 +45,6 @@ export function App() {
           })
           .then((data) => {
             setToken(data.access_token);
-            console.log("login useEffect: token set");
             localStorage.setItem("accessToken", data.access_token);
             localStorage.setItem("refreshToken", data.refresh_token);
             localStorage.setItem("tokenExpiry", (Date.now() + (3600 * 1000)).toString());
@@ -66,7 +62,6 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    console.log("in user useEffect");
     if(token) {
       fetchWithErrorHandling(
         `${BACKEND_URL}/api/user`, 
@@ -80,7 +75,6 @@ export function App() {
   },[token]);
 
   useEffect(() => {
-    console.log("in fetch useEffect");
     fetchTopData();
   }, [token, selectedType, timeRange, amount]);
 
@@ -111,18 +105,13 @@ export function App() {
   }
 
   async function fetchTopData() {
-    console.log('in fetchTopData()');
-    console.log(`fetchTopData(): token: ${token}`);
-
     if(!token) {
-      console.log('fetchTopData(): No token - not fetching.');
       return;
     }
    
     const validToken = await getValidAccessToken();
 
     if (validToken) {
-      console.log("fetchTopData() - got valid token from getValidAccessToken()");
       const endpoint =
         selectedType == "tracks" ? "top-tracks"
         : selectedType == "artists" ?  "top-artists"
@@ -143,18 +132,16 @@ export function App() {
   }
 
   async function getValidAccessToken(): Promise<string | null> {
-    console.log('in getValidAccessToken()');
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
     const tokenExpiry = localStorage.getItem("tokenExpiry");
 
     if(!accessToken || ! refreshToken || !tokenExpiry) {
-      console.log("getValidAccessToken(): No token/refresh/expiry found-not checking token validity.");
       return null;
     }
 
     if(Date.now() >= Number(tokenExpiry)) {
-      console.log("getValidAccessToken(): access token refreshed..");
+      console.log("access token refreshed..");
       try {
         const data = await fetchWithErrorHandling(
           `${BACKEND_URL}/api/auth/refresh`, 
@@ -172,7 +159,6 @@ export function App() {
           return data.access_token;
         } 
         else {
-          console.log("Failed to refresh token.");
           return null;
         }
       }
