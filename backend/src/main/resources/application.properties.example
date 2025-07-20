@@ -1,16 +1,19 @@
- # SAMPLE CONFIG FILE for SpotiRecap backend
+# SAMPLE CONFIG FILE for SpotiRecap backend
 # Copy this file to resources/application.properties and fill in your own credentials
+
+# NOTE: You can keep everything as-is except for `spotify.client-id` and `spotify.client-secret`
+# - replace it with your own from the Spotify Developer Dashboard
 
 spring.application.name=spotirecap
 
 server.port=8080
 
-# Spotify API credentials (get these from your Spotify Developer Dashboard)
+# Spotify API credentials - register an app and get these from your Spotify Developer Dashboard
 spotify.client-id=YOUR_SPOTIFY_CLIENT_ID
 spotify.client-secret=YOUR_SPOTIFY_CLIENT_SECRET
 spotify.redirect-uri=http://localhost:3000/callback
 
-# Redis cache config (change if using cloud Redis instance)
+# Redis cache config - this will run a Redis instance locally which is what we want for local development
 spring.cache.type=redis
 spring.redis.host=localhost
 spring.redis.port=6379
