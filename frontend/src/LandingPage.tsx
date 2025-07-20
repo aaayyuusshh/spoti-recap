@@ -29,11 +29,14 @@ export function LandingPage({ loginUrl }: { loginUrl: string }) {
 
       <a
         href={loginUrl}
-        className="bg-green-600 hover:bg-green-700 transition text-white font-bold text-lg rounded-xl shadow-lg px-10 py-4 mt-4 mb-10"
+        className="bg-green-600 hover:bg-green-700 transition text-white font-bold text-lg rounded-xl shadow-lg px-10 py-4 mt-4 mb-2"
         style={{ letterSpacing: ".04em" }}
       >
         Login with Spotify
       </a>
+      <p className="text-sm text-blue-500 underline">
+        <a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+      </p>
 
       <div className="mt-auto mb-4 text-xs text-gray-400">
         Made with 💚
