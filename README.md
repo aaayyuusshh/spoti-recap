@@ -2,6 +2,13 @@
 Displays your Spotify top tracks, artists, or genres of the past month, 6 months, or all time.
 
 You can view and share your music taste and listening habits anytime now!
+
+<img width="1298" height="716" alt="Screenshot 2025-08-08 at 2 58 07 AM" src="https://github.com/user-attachments/assets/901d2aa6-0df6-4bbb-9063-2b2ee8c6d34f" />
+<div align="center">
+  <img width="414" height="722" alt="example1" src="https://github.com/user-attachments/assets/cbfbdcf0-cdca-4083-b20f-0198bd9bb9df" />
+  <img width="412" height="722" alt="example2" src="https://github.com/user-attachments/assets/648ddb2a-65af-4a71-b809-697bbaff5f60" />
+</div>
+
 ___
 
 ## Architecture
